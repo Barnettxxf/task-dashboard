@@ -704,7 +704,7 @@ def index() -> rx.Component:
                 rx.cond(
                     State.filtered_tasks.length() == 0,
                     rx.card(
-                        rx.text("No tasks found", text_align="center", class_name="text-gray-500 dark:text-gray-400"),
+                        rx.text("No tasks found", text_align="center", color="gray"),
                         padding="8"
                     )
                 ),

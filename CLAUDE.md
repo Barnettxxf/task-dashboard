@@ -92,7 +92,11 @@ User Action → State Method → DB Update → Reactive Re-render
 - Database auto-migrates on startup
 - Sample data auto-creates if database is empty
 - Both web UI and API share the same database models
+<<<<<<< HEAD
 - Hot reload enabled for both Reflex and FastAPI servers
 
 ## Additional Memories
 - to memorize
+=======
+- Hot reload enabled for both Reflex and FastAPI servers
+>>>>>>> ece913bea184ada5f7ed8d6512a05613af850698
