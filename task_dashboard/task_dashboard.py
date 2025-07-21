@@ -393,7 +393,7 @@ def add_task_modal() -> rx.Component:
                 # Modern header with gradient
                 rx.dialog.title(
                     rx.cond(State.is_editing, "Edit Task", "Add New Task"),
-                    class_name="text-2xl font-semibold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-6"
+                    class_name="text-2xl font-semibold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-6 dark:from-blue-400 dark:to-purple-400"
                 ),
                 
                 # Modern form container
@@ -401,12 +401,12 @@ def add_task_modal() -> rx.Component:
                     # Title with compact styling
                     rx.vstack(
                         rx.text("Title", 
-                               class_name="text-sm font-medium text-gray-700 mb-1"),
+                               class_name="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"),
                         rx.input(
                             placeholder="Task title...",
                             value=State.new_task_title,
                             on_change=State.set_new_task_title,
-                            class_name="w-full px-3 py-2.5 border-0 bg-gray-50 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:bg-white transition-all duration-200 placeholder-gray-400"
+                            class_name="w-full px-3 py-2.5 border-0 bg-gray-50 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:bg-white dark:focus:bg-gray-600 transition-all duration-200 placeholder-gray-400 dark:placeholder-gray-500"
                         ),
                         spacing="1",
                         align_items="start"
@@ -415,13 +415,13 @@ def add_task_modal() -> rx.Component:
                     # Description with compact styling
                     rx.vstack(
                         rx.text("Description", 
-                               class_name="text-sm font-medium text-gray-700 mb-1"),
+                               class_name="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"),
                         rx.text_area(
                             placeholder="Add details...",
                             value=State.new_task_description,
                             on_change=State.set_new_task_description,
                             rows="2",
-                            class_name="w-full px-3 py-2.5 border-0 bg-gray-50 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:bg-white transition-all duration-200 resize-none placeholder-gray-400"
+                            class_name="w-full px-3 py-2.5 border-0 bg-gray-50 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:bg-white dark:focus:bg-gray-600 transition-all duration-200 resize-none placeholder-gray-400 dark:placeholder-gray-500"
                         ),
                         spacing="1",
                         align_items="start"
@@ -431,12 +431,12 @@ def add_task_modal() -> rx.Component:
                     rx.hstack(
                         rx.vstack(
                             rx.text("Priority", 
-                                   class_name="text-sm font-medium text-gray-700 mb-1"),
+                                   class_name="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"),
                             rx.select(
                                 ["low", "medium", "high"],
                                 value=State.new_task_priority,
                                 on_change=State.set_new_task_priority,
-                                class_name="w-full bg-gray-50 rounded-lg border-0 px-3 py-2 h-10 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all duration-200"
+                                class_name="w-full bg-gray-50 dark:bg-gray-700 dark:text-white rounded-lg border-0 px-3 py-2 h-10 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all duration-200"
                             ),
                             spacing="1",
                             width="100%",
@@ -444,20 +444,20 @@ def add_task_modal() -> rx.Component:
                         ),
                         rx.vstack(
                             rx.text("Due Date", 
-                                   class_name="text-sm font-medium text-gray-700 mb-1"),
+                                   class_name="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"),
                             rx.hstack(
                                 rx.input(
                                     type="date",
                                     value=State.new_task_due_date,
                                     on_change=State.set_new_task_due_date,
-                                    class_name="w-full px-3 py-2 border-0 bg-gray-50 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:bg-white transition-all duration-200 h-10 text-sm"
+                                    class_name="w-full px-3 py-2 border-0 bg-gray-50 dark:bg-gray-700 dark:text-white rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:bg-white dark:focus:bg-gray-600 transition-all duration-200 h-10 text-sm"
                                 ),
                                 rx.button(
                                     "Clear",
                                     on_click=State.set_new_task_due_date(""),
                                     variant="ghost",
                                     size="1",
-                                    class_name="text-gray-500 hover:text-gray-700 px-2 h-10 flex items-center text-sm"
+                                    class_name="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 px-2 h-10 flex items-center text-sm"
                                 ),
                                 spacing="1",
                                 width="100%"
@@ -505,7 +505,7 @@ def add_task_modal() -> rx.Component:
                         "Keep adding",
                         checked=State.continuous_add,
                         on_change=State.set_continuous_add,
-                        class_name="text-sm text-gray-600"
+                        class_name="text-sm text-gray-600 dark:text-gray-400"
                     ),
                     spacing="2"
                 ),
@@ -517,7 +517,7 @@ def add_task_modal() -> rx.Component:
                             "Cancel",
                             variant="ghost",
                             on_click=lambda: State.cancel_edit(),
-                            class_name="px-4 py-2 text-sm font-semibold text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-all duration-200"
+                            class_name="px-4 py-2 text-sm font-semibold text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-all duration-200"
                         )
                     ),
                     rx.dialog.close(
@@ -539,17 +539,77 @@ def add_task_modal() -> rx.Component:
                 spacing="4",
                 class_name="w-full max-w-sm"
             ),
-            class_name="bg-white rounded-xl shadow-lg border-0 p-4 max-w-sm"
+            class_name="bg-white dark:bg-gray-800 rounded-xl shadow-lg border-0 p-4 max-w-sm"
         ),
         open=State.show_add_modal
     )
 
+def theme_toggle() -> rx.Component:
+    """Theme toggle button component."""
+    return rx.color_mode.button(
+        variant="ghost",
+        size="2",
+        class_name="rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+    )
+
 def index() -> rx.Component:
-    """Main dashboard page with statistics and kanban board."""
-    return rx.center(
+    return rx.fragment(
         rx.container(
             rx.vstack(
-                rx.heading("Task Dashboard", size="8", text_align="center"),
+                # Header with logo and theme toggle
+                rx.hstack(
+                    rx.hstack(
+                        rx.icon("clipboard-list", class_name="w-8 h-8 text-blue-600"),
+                        rx.heading("Task Dashboard", size="8", class_name="font-bold text-gray-900"),
+                        spacing="3",
+                        align="center"
+                    ),
+                    theme_toggle(),
+                    justify="between",
+                    align="center",
+                    width="100%",
+                    class_name="mb-6"
+                ),
+                
+                # Stats cards
+                rx.grid(
+                    rx.card(
+                        rx.vstack(
+                            rx.text("Total Tasks", size="2", color="gray"),
+                            rx.text(State.total_tasks, size="6", weight="bold", color="blue"),
+                            rx.text(f"{State.completion_rate}% complete", size="1", color="gray"),
+                            spacing="1"
+                        ),
+                        padding="4"
+                    ),
+                    rx.card(
+                        rx.vstack(
+                            rx.text("To Do", size="2", color="gray"),
+                            rx.text(State.todo_count, size="6", weight="bold", color="orange"),
+                            spacing="1"
+                        ),
+                        padding="4"
+                    ),
+                    rx.card(
+                        rx.vstack(
+                            rx.text("In Progress", size="2", color="gray"),
+                            rx.text(State.in_progress_count, size="6", weight="bold", color="yellow"),
+                            spacing="1"
+                        ),
+                        padding="4"
+                    ),
+                    rx.card(
+                        rx.vstack(
+                            rx.text("Done", size="2", color="gray"),
+                            rx.text(State.done_count, size="6", weight="bold", color="green"),
+                            spacing="1"
+                        ),
+                        padding="4"
+                    ),
+                    columns="4",
+                    spacing="4",
+                    class_name="grid-cols-2 md:grid-cols-4 mb-6"
+                ),
                 
                 # Search and Filter Controls with Add Task Button
                 rx.card(
@@ -559,7 +619,7 @@ def index() -> rx.Component:
                             value=State.search_query,
                             on_change=State.set_search_query,
                             width="300px",
-                            class_name="border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+                            class_name="border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white dark:bg-gray-700 dark:text-white"
                         ),
                         rx.select(
                             ["all", "todo", "in_progress", "done"],
@@ -567,7 +627,7 @@ def index() -> rx.Component:
                             value=State.filter_status,
                             on_change=State.set_filter_status,
                             width="150px",
-                            class_name="border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+                            class_name="border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white dark:bg-gray-700 dark:text-white"
                         ),
                         rx.select(
                             ["created_at", "due_date", "priority", "title"],
@@ -575,7 +635,7 @@ def index() -> rx.Component:
                             value=State.sort_by,
                             on_change=State.set_sort_by,
                             width="150px",
-                            class_name="border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+                            class_name="border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white dark:bg-gray-700 dark:text-white"
                         ),
                         rx.select(
                             ["asc", "desc"],
@@ -583,7 +643,7 @@ def index() -> rx.Component:
                             value=State.sort_order,
                             on_change=State.set_sort_order,
                             width="100px",
-                            class_name="border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+                            class_name="border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white dark:bg-gray-700 dark:text-white"
                         ),
                         rx.button(
                             "+ Add Task",
@@ -597,71 +657,71 @@ def index() -> rx.Component:
                         align="center",
                         class_name="flex-wrap"
                     ),
-                    class_name="bg-gradient-to-r from-gray-50 to-white border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200"
+                    class_name="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 mb-6"
                 ),
             
-            # Task columns
-            rx.grid(
-                rx.vstack(
-                    rx.heading("To Do", size="5"),
-                    rx.text(f"({State.todo_count} tasks)", size="2", color="gray"),
-                    rx.foreach(
-                        State.tasks_by_status["todo"],
-                        task_item
+                # Task columns
+                rx.grid(
+                    rx.vstack(
+                        rx.heading("To Do", size="5"),
+                        rx.text(f"({State.todo_count} tasks)", size="2", color="gray"),
+                        rx.foreach(
+                            State.tasks_by_status["todo"],
+                            task_item
+                        ),
+                        spacing="2",
+                        width="100%",
+                        align_items="stretch"
                     ),
-                    spacing="2",
-                    width="100%",
-                    align_items="stretch"
-                ),
-                rx.vstack(
-                    rx.heading("In Progress", size="5"),
-                    rx.text(f"({State.in_progress_count} tasks)", size="2", color="gray"),
-                    rx.foreach(
-                        State.tasks_by_status["in_progress"],
-                        task_item
+                    rx.vstack(
+                        rx.heading("In Progress", size="5"),
+                        rx.text(f"({State.in_progress_count} tasks)", size="2", color="gray"),
+                        rx.foreach(
+                            State.tasks_by_status["in_progress"],
+                            task_item
+                        ),
+                        spacing="2",
+                        width="100%",
+                        align_items="stretch"
                     ),
-                    spacing="2",
-                    width="100%",
-                    align_items="stretch"
-                ),
-                rx.vstack(
-                    rx.heading("Done", size="5"),
-                    rx.text(f"({State.done_count} tasks)", size="2", color="gray"),
-                    rx.foreach(
-                        State.tasks_by_status["done"],
-                        task_item
+                    rx.vstack(
+                        rx.heading("Done", size="5"),
+                        rx.text(f"({State.done_count} tasks)", size="2", color="gray"),
+                        rx.foreach(
+                            State.tasks_by_status["done"],
+                            task_item
+                        ),
+                        spacing="2",
+                        width="100%",
+                        align_items="stretch"
                     ),
-                    spacing="2",
+                    columns="3",
+                    spacing="4",
                     width="100%",
-                    align_items="stretch"
+                    class_name="grid-cols-1 md:grid-cols-3"
                 ),
-                columns="3",
+                
+                rx.cond(
+                    State.filtered_tasks.length() == 0,
+                    rx.card(
+                        rx.text("No tasks found", text_align="center", color="gray"),
+                        padding="8"
+                    )
+                ),
+                
                 spacing="4",
-                width="100%",
-                class_name="grid-cols-1 md:grid-cols-3"
+                padding="4",
+                width="100%"
             ),
-            
-            rx.cond(
-                State.filtered_tasks.length() == 0,
-                rx.card(
-                    rx.text("No tasks found", text_align="center", color="gray"),
-                    padding="8"
-                )
-            ),
-            
-            spacing="4",
-            padding="4",
-            width="100%"
+            max_width="1200px",
+            margin="auto"
         ),
-        max_width="1200px",
-        margin="auto"
-    ),
-    add_task_modal()
-)
+        add_task_modal()
+    )
 
 from task_dashboard.api import api_app
 
-app = rx.App()
+app = rx.App(theme=rx.theme(accent_color="blue"))
 app.add_page(index, title="Task Dashboard", on_load=State.on_load)
 
 # Mount the FastAPI app for RESTful API endpoints
