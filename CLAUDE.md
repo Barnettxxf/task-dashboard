@@ -3,60 +3,70 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Technology Stack
-- **Framework**: Reflex (formerly Pynecone) - Python reactive web framework
-- **Language**: Python 3.8+
-- **Styling**: Tailwind CSS via Reflex's component system
-- **State Management**: Built-in reactive state with WebSocket sync
+- **Framework**: Reflex (Python reactive web framework)
+- **Database**: SQLAlchemy ORM with SQLite/MySQL
+- **API**: FastAPI REST endpoints
+- **Styling**: Tailwind CSS via Reflex components
 
-## Development Commands
+## Core Commands
 
-### Setup and Installation
+### Development
 ```bash
 pip install -r requirements.txt
+reflex run                          # Dev server with API (http://localhost:3000)
+python -m task_dashboard.api        # API server only (http://localhost:8000)
+uvicorn task_dashboard.api:api_app --reload --port 8000  # Alternative API launch
+reflex export                       # Static build for deployment
 ```
 
-### Development Server
+### Database
+Auto-creates SQLite database. For MySQL:
 ```bash
-reflex run                    # Start dev server on http://localhost:3000
-reflex run --port 8080       # Custom port
-reflex run --env prod        # Production mode
+export DB_TYPE=mysql
+export DB_HOST=localhost DB_PORT=3306
+export DB_USER=root DB_PASSWORD=password
+export DB_NAME=task_dashboard
 ```
 
-### Build and Export
+### API Usage
 ```bash
-reflex export                 # Generate static build for deployment
+curl http://localhost:8000/tasks          # List tasks
+curl http://localhost:8000/tasks/1        # Get task
+curl -X POST http://localhost:8000/tasks \
+  -H "Content-Type: application/json" \
+  -d '{"title": "New", "priority": "high"}'
+curl -X PATCH http://localhost:8000/tasks/1/status \
+  -H "Content-Type: application/json" \
+  -d '{"status": "done"}'
 ```
 
-### Debugging
-```bash
-reflex log                   # View application logs
-```
+### API Documentation
+- **Swagger UI**: http://localhost:8000/docs
+- **ReDoc**: http://localhost:8000/redoc
+- **OpenAPI Schema**: http://localhost:8000/openapi.json
 
-## Architecture Overview
+## Architecture
 
-### Core Data Model
-- **Task**: Main entity with fields - id, title, description, status (todo/in_progress/done), priority (low/medium/high), due_date, created_at, updated_at
+### Dual Interface
+- **Web UI**: Reflex frontend with reactive state (port 3000)
+- **REST API**: FastAPI endpoints (port 8000)
+- **Database**: SQLAlchemy models auto-synced
 
-### State Management
-- **State class**: Centralized reactive state in task_dashboard.py:21
-- **Computed vars**: Real-time filtering, sorting, and statistics (filtered_tasks, task counts, completion rates)
-- **CRUD operations**: Full task lifecycle through state methods
+### Key Files
+- `task_dashboard/task_dashboard.py`: Main app with State class
+- `task_dashboard/database.py`: SQLAlchemy models and DB setup
+- `task_dashboard/api.py`: FastAPI REST endpoints with rich Swagger docs
+- `rxconfig.py`: Reflex configuration
 
-### Component Structure
-- **index()**: Main dashboard page with statistics header, search/filter controls, and kanban board
-- **task_item()**: Reusable task card component with status updates, edit/delete actions
-- **add_task_modal()**: Dialog for creating/editing tasks
+### Launch Troubleshooting
+If `python task_dashboard/api.py` fails, use:
+- `python -m task_dashboard.api` (module import)
+- `uvicorn task_dashboard.api:api_app --reload --port 8000` (direct uvicorn)
 
-### Key Features
-- **Kanban Board**: Three-column layout (todo, in_progress, done)
-- **Search & Filter**: Real-time search, status filtering, sorting by multiple criteria
-- **Statistics**: Live task counts, completion rates, priority distribution
-- **Responsive Design**: Mobile-first grid layout using Tailwind classes
+### State Pattern
+User Action → State Method → DB Update → Reactive Re-render
 
-### Data Flow Pattern
-User interaction → State method → Reactive update → UI re-render via WebSocket
-
-### File Structure
-- **task_dashboard.py**: All application logic and components
-- **rxconfig.py**: Reflex configuration with app settings
-- **assets/**: Static assets (favicon.ico)
+### Task Model
+- `TaskModel`: SQLAlchemy entity with title, description, status, priority, due_date
+- `Task`: Pydantic model for API responses
+- Supports todo/in_progress/done status and low/medium/high priority

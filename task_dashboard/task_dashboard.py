@@ -659,5 +659,10 @@ def index() -> rx.Component:
     add_task_modal()
 )
 
+from task_dashboard.api import api_app
+
 app = rx.App()
 app.add_page(index, title="Task Dashboard", on_load=State.on_load)
+
+# Mount the FastAPI app for RESTful API endpoints
+app._cached_fastapi_app = api_app
