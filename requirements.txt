@@ -1,0 +1,6 @@
+
+reflex==0.8.2
+sqlalchemy
+alembic
+aiosqlite
+pymysql
