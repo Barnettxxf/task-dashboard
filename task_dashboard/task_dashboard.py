@@ -589,22 +589,22 @@ def task_item(task: Task) -> rx.Component:
     return rx.card(
         rx.vstack(
             rx.hstack(
-                rx.text(task.title, font_weight="bold", class_name="truncate text-gray-900 dark:text-white"),
+                rx.text(task.title, font_weight="bold", class_name="truncate text-gray-900 dark:text-gray-100"),
                 rx.badge(task.priority.upper(), color_scheme=priority_color, size="1"),
                 justify="between",
                 align="center",
                 width="100%"
             ),
-            rx.text(task.description, size="2", class_name="line-clamp-2 text-gray-600 dark:text-gray-400"),
+            rx.text(task.description, size="2", class_name="line-clamp-2 text-gray-700 dark:text-gray-300"),
             rx.hstack(
                 rx.cond(
                     task.due_date != "",
-                    rx.text(f"Due: {task.due_date}", size="1", class_name="text-gray-500 dark:text-gray-400"),
-                    rx.text("No due date", size="1", class_name="text-gray-500 dark:text-gray-400")
+                    rx.text(f"Due: {task.due_date}", size="1", class_name="text-gray-600 dark:text-gray-400"),
+                    rx.text("No due date", size="1", class_name="text-gray-600 dark:text-gray-400")
                 ),
                 rx.cond(
                     task.created_at != "",
-                    rx.text(f"Created: {task.created_at[:10]}", size="1", class_name="text-gray-500 dark:text-gray-400"),
+                    rx.text(f"Created: {task.created_at[:10]}", size="1", class_name="text-gray-600 dark:text-gray-400"),
                     rx.text("")
                 ),
                 spacing="2"
@@ -635,7 +635,7 @@ def task_item(task: Task) -> rx.Component:
             spacing="2",
             width="100%"
         ),
-        class_name="hover:shadow-md transition-shadow duration-200"
+        class_name="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow duration-200"
     )
 
 
@@ -1084,7 +1084,7 @@ def index() -> rx.Component:
                 rx.hstack(
                     rx.hstack(
                         rx.icon("clipboard-list", class_name="w-8 h-8 text-blue-600"),
-                        rx.heading("Task Dashboard", size="8", class_name="font-bold text-gray-900"),
+                        rx.heading("Task Dashboard", size="8", class_name="font-bold text-gray-900 dark:text-gray-100"),
                         spacing="3",
                         align="center"
                     ),
@@ -1109,10 +1109,10 @@ def index() -> rx.Component:
                     ~State.is_authenticated,
                     rx.card(
                         rx.vstack(
-                            rx.heading("Welcome to Task Dashboard", size="6", class_name="text-center"),
+                            rx.heading("Welcome to Task Dashboard", size="6", class_name="text-center text-gray-900 dark:text-gray-100"),
                             rx.text(
                                 "Your personal task management solution. Create an account to get started with your own task dashboard.",
-                                class_name="text-center text-gray-600 dark:text-gray-400",
+                                class_name="text-center text-gray-600 dark:text-gray-300",
                                 size="4"
                             ),
                             rx.hstack(
@@ -1149,16 +1149,16 @@ def index() -> rx.Component:
                         rx.grid(
                             rx.card(
                                 rx.vstack(
-                                    rx.text("Total Tasks", size="2", class_name="text-gray-500 dark:text-gray-400"),
+                                    rx.text("Total Tasks", size="2", class_name="text-gray-500 dark:text-gray-300"),
                                     rx.text(State.total_tasks, size="6", weight="bold", color="blue"),
-                                    rx.text(f"{State.completion_rate}% complete", size="1", class_name="text-gray-500 dark:text-gray-400"),
+                                    rx.text(f"{State.completion_rate}% complete", size="1", class_name="text-gray-500 dark:text-gray-300"),
                                     spacing="1"
                                 ),
                                 padding="4"
                             ),
                             rx.card(
                                 rx.vstack(
-                                    rx.text("To Do", size="2", class_name="text-gray-500 dark:text-gray-400"),
+                                    rx.text("To Do", size="2", class_name="text-gray-500 dark:text-gray-300"),
                                     rx.text(State.todo_count, size="6", weight="bold", color="orange"),
                                     spacing="1"
                                 ),
@@ -1166,7 +1166,7 @@ def index() -> rx.Component:
                             ),
                             rx.card(
                                 rx.vstack(
-                                    rx.text("In Progress", size="2", class_name="text-gray-500 dark:text-gray-400"),
+                                    rx.text("In Progress", size="2", class_name="text-gray-500 dark:text-gray-300"),
                                     rx.text(State.in_progress_count, size="6", weight="bold", color="yellow"),
                                     spacing="1"
                                 ),
@@ -1174,7 +1174,7 @@ def index() -> rx.Component:
                             ),
                             rx.card(
                                 rx.vstack(
-                                    rx.text("Done", size="2", class_name="text-gray-500 dark:text-gray-400"),
+                                    rx.text("Done", size="2", class_name="text-gray-500 dark:text-gray-300"),
                                     rx.text(State.done_count, size="6", weight="bold", color="green"),
                                     spacing="1"
                                 ),
@@ -1237,7 +1237,7 @@ def index() -> rx.Component:
                         # Task columns
                         rx.grid(
                             rx.vstack(
-                                rx.heading("To Do", size="5", class_name="text-gray-900 dark:text-white"),
+                                rx.heading("To Do", size="5", class_name="text-gray-900 dark:text-gray-100"),
                                 rx.text(f"({State.todo_count} tasks)", size="2", class_name="text-gray-500 dark:text-gray-400"),
                                 rx.foreach(
                                     State.tasks_by_status["todo"],
@@ -1248,7 +1248,7 @@ def index() -> rx.Component:
                                 align_items="stretch"
                             ),
                             rx.vstack(
-                                rx.heading("In Progress", size="5", class_name="text-gray-900 dark:text-white"),
+                                rx.heading("In Progress", size="5", class_name="text-gray-900 dark:text-gray-100"),
                                 rx.text(f"({State.in_progress_count} tasks)", size="2", class_name="text-gray-500 dark:text-gray-400"),
                                 rx.foreach(
                                     State.tasks_by_status["in_progress"],
@@ -1259,7 +1259,7 @@ def index() -> rx.Component:
                                 align_items="stretch"
                             ),
                             rx.vstack(
-                                rx.heading("Done", size="5", class_name="text-gray-900 dark:text-white"),
+                                rx.heading("Done", size="5", class_name="text-gray-900 dark:text-gray-100"),
                                 rx.text(f"({State.done_count} tasks)", size="2", class_name="text-gray-500 dark:text-gray-400"),
                                 rx.foreach(
                                     State.tasks_by_status["done"],
@@ -1278,7 +1278,7 @@ def index() -> rx.Component:
                         rx.cond(
                             State.filtered_tasks.length() == 0,
                             rx.card(
-                                rx.text("No tasks found", text_align="center", color="gray"),
+                                rx.text("No tasks found", text_align="center", class_name="text-gray-600 dark:text-gray-300"),
                                 padding="8"
                             )
                         ),
