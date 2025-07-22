@@ -99,3 +99,6 @@ User Action → State Method → DB Update → Reactive Re-render
 - Both web UI and API share the same database models
 - Hot reload enabled for both Reflex and FastAPI servers
 - Test database uses separate SQLite file (test_tasks.db)
+- All test scripts must be placed in the `tests/` directory
+- User management system with individual task dashboards implemented
+- Authentication required for API endpoints via Bearer tokens

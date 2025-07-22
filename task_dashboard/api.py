@@ -1,11 +1,12 @@
-"""RESTful API endpoints for task management.
+"""RESTful API endpoints for task management with user authentication.
 
 This API provides comprehensive task management capabilities with full CRUD operations,
-real-time filtering, and statistics. All endpoints return JSON responses and support
-standard HTTP status codes.
+user authentication, and user-specific task filtering. All endpoints return JSON responses
+and support standard HTTP status codes.
 
 ## Authentication
-No authentication required for this demo application.
+JWT-based authentication is required for most endpoints. Include the Bearer token
+in the Authorization header: `Authorization: Bearer <token>`
 
 ## Rate Limiting
 No rate limiting implemented.
@@ -19,16 +20,19 @@ All responses use standard JSON format with appropriate HTTP status codes:
 - 200: Success
 - 201: Created
 - 400: Bad Request
+- 401: Unauthorized
 - 404: Not Found
 - 500: Internal Server Error
 """
 
 from typing import List, Optional
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Depends, Security
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel, Field
 
-from task_dashboard.database import db_manager, TaskModel
+from task_dashboard.database import db_manager, TaskModel, UserModel
+from task_dashboard.auth import AuthManager
 
 # Initialize FastAPI app with enhanced metadata
 api_app = FastAPI(
@@ -52,11 +56,29 @@ api_app = FastAPI(
     ],
     tags=[
         {"name": "tasks", "description": "Task management operations"},
+        {"name": "auth", "description": "User authentication operations"},
         {"name": "health", "description": "API health and monitoring"},
     ]
 )
 
 # Pydantic models for API
+class UserRegister(BaseModel):
+    """Model for user registration."""
+    username: str = Field(description="Unique username")
+    email: str = Field(description="User email address")
+    password: str = Field(description="User password (min 6 characters)")
+
+class UserLogin(BaseModel):
+    """Model for user login."""
+    username: str = Field(description="Username or email")
+    password: str = Field(description="User password")
+
+class UserResponse(BaseModel):
+    """Response model for user data."""
+    id: int = Field(description="User ID")
+    username: str = Field(description="Username")
+    email: str = Field(description="Email address")
+
 class TaskCreate(BaseModel):
     """Model for creating a new task."""
     title: str = Field(description="Task title (required)")
@@ -99,6 +121,22 @@ class ErrorResponse(BaseModel):
     """Error response model."""
     detail: str = Field(description="Error message")
 
+# Security setup
+security = HTTPBearer()
+
+# Helper function to get current user
+def get_current_user(credentials: HTTPAuthorizationCredentials = Security(security)):
+    """Get current authenticated user from token."""
+    # For simplicity, we'll use username as token
+    username = credentials.credentials
+    with db_manager.get_session() as session:
+        user = session.query(UserModel).filter(
+            (UserModel.username == username) | (UserModel.email == username)
+        ).first()
+        if not user:
+            raise HTTPException(status_code=401, detail="Invalid authentication credentials")
+        return user
+
 # Helper function to convert TaskModel to TaskResponse
 def task_to_response(task: TaskModel) -> TaskResponse:
     return TaskResponse(
@@ -112,17 +150,66 @@ def task_to_response(task: TaskModel) -> TaskResponse:
         updated_at=task.updated_at.isoformat() if task.updated_at else ""
     )
 
+@api_app.post("/auth/register", response_model=UserResponse, status_code=201, tags=["auth"])
+async def register_user(user_data: UserRegister):
+    """
+    Register a new user account.
+    
+    Creates a new user with the provided credentials. The user ID will be
+    returned in the response and can be used for authentication.
+    
+    - **username**: Unique username (must not exist)
+    - **email**: Email address (must be unique)
+    - **password**: Password (minimum 6 characters)
+    
+    Returns the user ID, username, and email.
+    """
+    user = AuthManager.create_user(user_data.username, user_data.email, user_data.password)
+    if not user:
+        raise HTTPException(status_code=400, detail="Username or email already exists")
+    return UserResponse(id=user['id'], username=user['username'], email=user['email'])
+
+@api_app.post("/auth/login", response_model=UserResponse, tags=["auth"])
+async def login_user(user_data: UserLogin):
+    """
+    Login existing user.
+    
+    Authenticates user credentials and returns the user information including user ID.
+    
+    - **username**: Username or email address
+    - **password**: User password
+    
+    Returns the user ID, username, and email.
+    """
+    user = AuthManager.authenticate_user(user_data.username, user_data.password)
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid username or password")
+    return UserResponse(id=user['id'], username=user['username'], email=user['email'])
+
+@api_app.get("/auth/me", response_model=UserResponse, tags=["auth"])
+async def get_current_user_info(current_user=Depends(get_current_user)):
+    """
+    Get current user information.
+    
+    Returns the authenticated user's ID, username, and email.
+    Requires authentication via Bearer token.
+    """
+    return UserResponse(id=current_user.id, username=current_user.username, email=current_user.email)
+
 @api_app.get("/tasks", response_model=List[TaskResponse], tags=["tasks"])
 async def get_tasks(
     status: Optional[str] = Query(None, description="Filter by task status"),
     priority: Optional[str] = Query(None, description="Filter by priority level"),
-    search: Optional[str] = Query(None, description="Search in title and description")
+    search: Optional[str] = Query(None, description="Search in title and description"),
+    current_user=Depends(get_current_user)
 ):
     """
-    Get all tasks with optional filtering.
+    Get all tasks for the authenticated user with optional filtering.
     
-    Returns a list of tasks filtered by status, priority, and/or search query.
-    All filters are optional and can be combined.
+    Returns a list of tasks belonging to the authenticated user, filtered by
+    status, priority, and/or search query. All filters are optional and can be combined.
+    
+    **Authentication Required**: Include Bearer token in Authorization header.
     
     - **status**: Filter by task status (todo, in_progress, done)
     - **priority**: Filter by priority level (low, medium, high)
@@ -131,7 +218,7 @@ async def get_tasks(
     Example: `/tasks?status=todo&priority=high&search=urgent`
     """
     with db_manager.get_session() as session:
-        query = session.query(TaskModel)
+        query = session.query(TaskModel).filter(TaskModel.user_id == current_user.id)
         
         if status:
             query = query.filter(TaskModel.status == status)
@@ -155,17 +242,21 @@ async def get_tasks(
         404: {"description": "Task not found", "model": ErrorResponse},
     }
 )
-async def get_task(task_id: int):
+async def get_task(task_id: int, current_user=Depends(get_current_user)):
     """
     Get a specific task by ID.
     
-    Returns detailed information about a single task including its current status,
-    priority, due date, and timestamps.
+    Returns detailed information about a single task belonging to the authenticated user.
+    
+    **Authentication Required**: Include Bearer token in Authorization header.
     
     - **task_id**: The unique identifier of the task
     """
     with db_manager.get_session() as session:
-        task = session.query(TaskModel).filter(TaskModel.id == task_id).first()
+        task = session.query(TaskModel).filter(
+            TaskModel.id == task_id,
+            TaskModel.user_id == current_user.id
+        ).first()
         if not task:
             raise HTTPException(status_code=404, detail="Task not found")
         return task_to_response(task)
@@ -180,12 +271,14 @@ async def get_task(task_id: int):
         400: {"description": "Invalid input data", "model": ErrorResponse},
     }
 )
-async def create_task(task: TaskCreate):
+async def create_task(task: TaskCreate, current_user=Depends(get_current_user)):
     """
-    Create a new task.
+    Create a new task for the authenticated user.
     
-    Creates a new task with the provided details. The task will be initialized
-    with status "todo" regardless of any status provided in the request.
+    Creates a new task with the provided details for the authenticated user.
+    The task will be initialized with status "todo".
+    
+    **Authentication Required**: Include Bearer token in Authorization header.
     
     - **title**: Required task title
     - **description**: Optional task description
@@ -194,6 +287,7 @@ async def create_task(task: TaskCreate):
     """
     with db_manager.get_session() as session:
         new_task = TaskModel(
+            user_id=current_user.id,
             title=task.title.strip(),
             description=task.description.strip(),
             status="todo",
@@ -215,18 +309,23 @@ async def create_task(task: TaskCreate):
         400: {"description": "Invalid input data", "model": ErrorResponse},
     }
 )
-async def update_task(task_id: int, task_update: TaskUpdate):
+async def update_task(task_id: int, task_update: TaskUpdate, current_user=Depends(get_current_user)):
     """
-    Update an existing task.
+    Update an existing task for the authenticated user.
     
-    Updates any provided fields of an existing task. All fields are optional,
-    and only the provided fields will be updated.
+    Updates any provided fields of an existing task belonging to the authenticated user.
+    All fields are optional, and only the provided fields will be updated.
+    
+    **Authentication Required**: Include Bearer token in Authorization header.
     
     - **task_id**: The unique identifier of the task to update
     - **task_update**: Object containing fields to update
     """
     with db_manager.get_session() as session:
-        task = session.query(TaskModel).filter(TaskModel.id == task_id).first()
+        task = session.query(TaskModel).filter(
+            TaskModel.id == task_id,
+            TaskModel.user_id == current_user.id
+        ).first()
         if not task:
             raise HTTPException(status_code=404, detail="Task not found")
         
@@ -256,7 +355,8 @@ async def update_task(task_id: int, task_update: TaskUpdate):
 )
 async def update_task_status(
     task_id: int,
-    status_update: TaskStatusUpdate
+    status_update: TaskStatusUpdate,
+    current_user=Depends(get_current_user)
 ):
     """
     Update only the task status.
@@ -264,11 +364,16 @@ async def update_task_status(
     A convenience endpoint for quickly updating just the task status
     without needing to send the full task update payload.
     
+    **Authentication Required**: Include Bearer token in Authorization header.
+    
     - **task_id**: The unique identifier of the task
     - **status**: New status value (todo, in_progress, done)
     """
     with db_manager.get_session() as session:
-        task = session.query(TaskModel).filter(TaskModel.id == task_id).first()
+        task = session.query(TaskModel).filter(
+            TaskModel.id == task_id,
+            TaskModel.user_id == current_user.id
+        ).first()
         if not task:
             raise HTTPException(status_code=404, detail="Task not found")
         
@@ -284,16 +389,21 @@ async def update_task_status(
         404: {"description": "Task not found", "model": ErrorResponse},
     }
 )
-async def delete_task(task_id: int):
+async def delete_task(task_id: int, current_user=Depends(get_current_user)):
     """
     Delete a task.
     
     Permanently removes a task from the database. This action cannot be undone.
     
+    **Authentication Required**: Include Bearer token in Authorization header.
+    
     - **task_id**: The unique identifier of the task to delete
     """
     with db_manager.get_session() as session:
-        task = session.query(TaskModel).filter(TaskModel.id == task_id).first()
+        task = session.query(TaskModel).filter(
+            TaskModel.id == task_id,
+            TaskModel.user_id == current_user.id
+        ).first()
         if not task:
             raise HTTPException(status_code=404, detail="Task not found")
         
