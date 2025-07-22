@@ -8,6 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **API**: FastAPI REST endpoints with comprehensive Swagger docs
 - **Styling**: Tailwind CSS via Reflex components
 - **Backend**: Python 3.8+
+- **Testing**: pytest with FastAPI TestClient
 
 ## Core Commands
 
@@ -25,6 +26,10 @@ uvicorn task_dashboard.api:api_app --reload --port 8000
 
 # Production build
 reflex export                       # Static build for deployment
+
+# Run tests
+python -m pytest tests/ -v          # Run all tests
+python tests/test_api.py -v         # Run API tests only
 ```
 
 ### Database Configuration
@@ -92,11 +97,5 @@ User Action → State Method → DB Update → Reactive Re-render
 - Database auto-migrates on startup
 - Sample data auto-creates if database is empty
 - Both web UI and API share the same database models
-<<<<<<< HEAD
 - Hot reload enabled for both Reflex and FastAPI servers
-
-## Additional Memories
-- to memorize
-=======
-- Hot reload enabled for both Reflex and FastAPI servers
->>>>>>> ece913bea184ada5f7ed8d6512a05613af850698
+- Test database uses separate SQLite file (test_tasks.db)
