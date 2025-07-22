@@ -154,4 +154,3 @@ User Action → State Method → DB Update → Reactive Re-render
 - **API Tests**: FastAPI TestClient for REST endpoint testing
 - **Auth Tests**: Dedicated authentication flow testing
 - **Database Tests**: Isolated test database with cleanup
-- Real-time statistics and filtering
