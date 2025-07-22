@@ -83,7 +83,11 @@ curl -X PATCH http://localhost:8000/tasks/1/status \
 ### Modular Code Structure (Post-Refactor)
 ```
 task_dashboard/
+<<<<<<< HEAD
 ├── task_dashboard.py    # Main Reflex app entry point
+=======
+├── task_dashboard.py    # Main Reflex app with State management
+>>>>>>> 39c307561d7d503c734ed0eb3f0ba512e920404e
 ├── api.py              # FastAPI REST endpoints with authentication
 ├── auth.py             # Authentication utilities and password hashing
 ├── database.py         # SQLAlchemy models and DB configuration
@@ -150,3 +154,4 @@ User Action → State Method → DB Update → Reactive Re-render
 - **API Tests**: FastAPI TestClient for REST endpoint testing
 - **Auth Tests**: Dedicated authentication flow testing
 - **Database Tests**: Isolated test database with cleanup
+- Real-time statistics and filtering
