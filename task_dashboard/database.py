@@ -8,11 +8,23 @@ from datetime import datetime
 
 Base = declarative_base()
 
+class UserModel(Base):
+    """SQLAlchemy model for users."""
+    __tablename__ = 'users'
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    username = Column(String(80), unique=True, nullable=False)
+    email = Column(String(120), unique=True, nullable=False)
+    password_hash = Column(String(255), nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
 class TaskModel(Base):
     """SQLAlchemy model for tasks."""
     __tablename__ = 'tasks'
     
     id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, nullable=False)
     title = Column(String(255), nullable=False)
     description = Column(Text)
     status = Column(String(20), default='todo')
