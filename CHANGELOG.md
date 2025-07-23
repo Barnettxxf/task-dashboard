@@ -2,26 +2,43 @@
 
 All notable changes to the Task Dashboard application will be documented in this file.
 
-## [1.2.0] - 2025-07-23
+## [1.0.2] - 2025-07-23
 
 ### Added
-- **Redesigned Task Detail Cards**: Completely modernized task cards with compact layout
-- **Improved Visibility**: Enhanced action buttons and metadata display
-- **Better Typography**: Smaller text for dates and improved readability
-- **Responsive Design**: Optimized card layout for all screen sizes
+- **Clickable Status Buttons**: Direct status changes with one-click buttons instead of dropdown
+- **Bilingual Status Buttons**: English/Chinese support for status buttons
+- **Visual Status Indicators**: Active status highlighted with color-coded buttons
+- **Enhanced User Experience**: Instant status changes without dropdown interaction
 
 ### Changed
-- **Task Card Layout**: Moved from grid to compact horizontal metadata
-- **Button Design**: Smaller, more accessible action buttons
-- **Text Size**: Reduced date and metadata text for cleaner appearance
-- **Spacing**: Tighter spacing for more tasks visible per screen
+- **Status Selection**: Replaced dropdown with direct click buttons (Todo, In Progress, Done)
+- **Button Design**: Color-coded status buttons (Orange for todo, Yellow for in-progress, Green for done)
+- **Visual Feedback**: Active status shows solid background, inactive shows ghost buttons
 
 ### Fixed
-- **Button Visibility**: Fixed delete/edit buttons being hidden
-- **Text Clipping**: Resolved truncation issues in task details
-- **Layout Overflow**: Fixed responsive layout issues
+- **Edit/Delete Buttons**: Fixed broken task editing and deletion functionality
+- **Task ID Handling**: Fixed type conversion issues for task identification
+- **ORM Compatibility**: Resolved Pydantic ORM mode configuration issues
 
-## [1.1.0] - 2025-07-23
+## [1.0.1] - 2025-07-23
+
+### Added
+- **Ultra-light Task Cards**: Pastel gradient backgrounds for better visibility
+- **Enhanced Readability**: Improved text contrast and darker colors on light backgrounds
+- **Subtle Borders**: Added light gray borders for card definition
+- **Status-based Colors**: Consistent color scheme matching statistics page
+
+### Changed
+- **Card Design**: Moved from dark gradients to ultra-light pastel backgrounds
+- **Text Colors**: Updated to darker shades for better readability on light backgrounds
+- **Shadow Effects**: Reduced intensity for cleaner appearance
+
+### Fixed
+- **Button Functionality**: Restored edit and delete button operations
+- **Database Session**: Fixed session management for task operations
+- **Type Handling**: Improved task ID parameter handling
+
+## [1.0.0] - 2025-07-23
 
 ### Added
 - **Multi-page Navigation System**: New navigation between Tasks and Statistics pages
