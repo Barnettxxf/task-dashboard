@@ -2,7 +2,11 @@
 
 A modern, full-stack task management application built with Reflex (Python reactive web framework) and FastAPI. Features a responsive web interface with real-time updates, comprehensive REST API, and full bilingual support (English/Chinese).
 
-![Task Dashboard UI](dashboard-ui.png)
+![Task Dashboard - Statistics](dashboard-statistic.png)
+*Task Statistics Dashboard*
+
+![Task Dashboard - Detail View](dashboard-detail.png)
+*Task Management Interface*
 
 ## Features
 
