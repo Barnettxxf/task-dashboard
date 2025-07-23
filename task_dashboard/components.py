@@ -145,45 +145,58 @@ def task_item(task: Task) -> rx.Component:
             # Actions - improved layout
             rx.divider(),
             rx.hstack(
-                # Status dropdown on left
-                rx.select(
-                    rx.cond(
-                        State.current_language == "zh",
-                        ["待办", "进行中", "已完成"],
-                        ["To Do", "In Progress", "Done"]
-                    ),
-                    default_value=rx.cond(
-                        State.current_language == "zh",
-                        rx.match(
-                            task.status,
-                            ("todo", "待办"),
-                            ("in_progress", "进行中"),
-                            ("done", "已完成"),
-                            task.status
+                # Status buttons for direct clicking
+                rx.hstack(
+                    rx.button(
+                        rx.cond(
+                            State.current_language == "zh",
+                            "待办",
+                            "To Do"
                         ),
-                        rx.match(
-                            task.status,
-                            ("todo", "To Do"),
-                            ("in_progress", "In Progress"),
-                            ("done", "Done"),
-                            task.status
+                        on_click=lambda: State.update_task_status(task.id, "todo"),
+                        size="1",
+                        variant=rx.cond(task.status == "todo", "surface", "ghost"),
+                        color_scheme=rx.cond(task.status == "todo", "orange", "gray"),
+                        class_name=rx.cond(
+                            task.status == "todo",
+                            "font-medium px-2 py-1",
+                            "font-medium px-2 py-1 opacity-60"
                         )
                     ),
-                    on_change=lambda value: State.update_task_status(
-                        task.id,
-                        rx.match(
-                            value,
-                            ("待办", "todo"),
-                            ("进行中", "in_progress"),
-                            ("已完成", "done"),
-                            ("To Do", "todo"),
-                            ("In Progress", "in_progress"),
-                            ("Done", "done"),
-                            value
+                    rx.button(
+                        rx.cond(
+                            State.current_language == "zh",
+                            "进行中",
+                            "In Progress"
+                        ),
+                        on_click=lambda: State.update_task_status(task.id, "in_progress"),
+                        size="1",
+                        variant=rx.cond(task.status == "in_progress", "surface", "ghost"),
+                        color_scheme=rx.cond(task.status == "in_progress", "yellow", "gray"),
+                        class_name=rx.cond(
+                            task.status == "in_progress",
+                            "font-medium px-2 py-1",
+                            "font-medium px-2 py-1 opacity-60"
                         )
                     ),
-                    size="1",
-                    class_name="border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-200 transition-all duration-200 bg-white dark:bg-gray-700 dark:text-white text-sm min-w-24"
+                    rx.button(
+                        rx.cond(
+                            State.current_language == "zh",
+                            "已完成",
+                            "Done"
+                        ),
+                        on_click=lambda: State.update_task_status(task.id, "done"),
+                        size="1",
+                        variant=rx.cond(task.status == "done", "surface", "ghost"),
+                        color_scheme=rx.cond(task.status == "done", "green", "gray"),
+                        class_name=rx.cond(
+                            task.status == "done",
+                            "font-medium px-2 py-1",
+                            "font-medium px-2 py-1 opacity-60"
+                        )
+                    ),
+                    spacing="2",
+                    align="center"
                 ),
                 
                 # Action buttons on right - always visible
