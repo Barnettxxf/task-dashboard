@@ -1,1 +1,1 @@
-git add new codes
+only git add new codes, not commit or push

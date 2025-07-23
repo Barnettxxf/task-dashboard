@@ -1,1 +1,1 @@
-tag current version as #$ARGUMENTS
+tag current version as #$ARGUMENTS and push
