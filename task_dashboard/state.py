@@ -836,15 +836,38 @@ class State(rx.State):
         except Exception as e:
             print(f"Error updating task status: {e}")
     
-    def edit_task(self, task: Task):
-        """Start editing a task."""
-        self.editing_task = task
-        self.is_editing = True
-        self.new_task_title = task.title
-        self.new_task_description = task.description
-        self.new_task_priority = task.priority
-        self.new_task_due_date = task.due_date or ""
-        self.show_add_modal = True
+    def get_task_by_id(self, task_id) -> Task:
+        """Get a task by ID from the database."""
+        task_id = int(task_id)  # Ensure task_id is an integer
+        with db_manager.get_session() as session:
+            db_task = session.query(TaskModel).filter(
+                TaskModel.id == task_id,
+                TaskModel.user_id == self.current_user.id
+            ).first()
+            if db_task:
+                return Task(
+                    id=str(db_task.id),
+                    title=db_task.title,
+                    description=db_task.description or "",
+                    status=db_task.status,
+                    priority=db_task.priority,
+                    due_date=db_task.due_date,
+                    created_at=db_task.created_at.isoformat() if db_task.created_at else None,
+                    updated_at=db_task.updated_at.isoformat() if db_task.updated_at else None
+                )
+            return None
+    
+    def edit_task(self, task_id):
+        """Start editing a task by ID."""
+        task = self.get_task_by_id(task_id)
+        if task:
+            self.editing_task = task
+            self.is_editing = True
+            self.new_task_title = task.title
+            self.new_task_description = task.description
+            self.new_task_priority = task.priority
+            self.new_task_due_date = task.due_date or ""
+            self.show_add_modal = True
     
     def cancel_edit(self):
         """Cancel editing."""

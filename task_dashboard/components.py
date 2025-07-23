@@ -190,6 +190,7 @@ def task_item(task: Task) -> rx.Component:
                 rx.hstack(
                     rx.button(
                         rx.icon("pencil", class_name="w-3.5 h-3.5"),
+                        on_click=lambda: State.edit_task(task.id),
                         size="1",
                         variant="surface",
                         color_scheme="blue",
@@ -197,6 +198,7 @@ def task_item(task: Task) -> rx.Component:
                     ),
                     rx.button(
                         rx.icon("trash", class_name="w-3.5 h-3.5"),
+                        on_click=lambda: State.delete_task(task.id),
                         size="1",
                         variant="surface",
                         color_scheme="red",
