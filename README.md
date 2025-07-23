@@ -1,4 +1,4 @@
-# Task Dashboard v1.0.0
+# Task Dashboard v1.2.0
 
 A modern, full-stack task management application built with Reflex (Python reactive web framework) and FastAPI. Features a responsive web interface with real-time updates, comprehensive REST API, and full bilingual support (English/Chinese).
 
@@ -6,15 +6,47 @@ A modern, full-stack task management application built with Reflex (Python react
 
 ## Features
 
-- **Web Interface**: Modern, responsive UI with drag-and-drop task management
-- **REST API**: Full CRUD operations with filtering, search, and pagination
-- **Real-time Updates**: Instant synchronization between web UI and database
-- **Task Filtering**: Filter by status, priority, and search terms
-- **Task Statistics**: Real-time completion rates and task counts
-- **Dark Mode**: Toggle between light and dark themes
-- **Bilingual Support**: Full English and Chinese language support
-- **Database**: SQLite by default, MySQL support available
-- **API Documentation**: Auto-generated Swagger/OpenAPI docs
+### 🌐 Web Interface
+- **Modern, responsive UI** with multi-page navigation (Tasks/Statistics)
+- **Kanban-style columns**: Todo, In Progress, Done
+- **Real-time updates** between web UI and database
+- **Task statistics** dashboard with gradient cards and progress indicators
+- **Responsive design** works on desktop, tablet, and mobile
+- **Dark/light mode** toggle with smooth transitions
+
+### 📊 Statistics Dashboard
+- **Modern gradient cards** for task counts and completion rates
+- **Real-time statistics** with circular progress indicators
+- **Task breakdown** by status with visual progress bars
+- **Priority analytics** with progress tracking
+- **Responsive grid layout** for all screen sizes
+
+### 🔍 Advanced Filtering
+- **Filter by status**: All, Todo, In Progress, Done
+- **Search functionality** across titles and descriptions
+- **Sort by**: Created date, due date, priority, or title
+- **Ascending/descending** order options
+- **Real-time filtering** with instant results
+
+### 🌏 Bilingual Support
+- **Full English and Chinese** language support
+- **Instant language switching** with reactive updates
+- **Comprehensive coverage**: 60+ translated UI elements
+- **Professional localization** for all user-facing text
+
+### 🔧 Backend Features
+- **REST API**: Full CRUD operations with filtering and search
+- **SQLite by default** with MySQL production support
+- **API documentation**: Auto-generated Swagger/OpenAPI docs
+- **Health monitoring**: Built-in health check endpoints
+- **Comprehensive testing** suite with pytest
+
+### 🎯 Task Management
+- **Create, read, update, delete** tasks with full validation
+- **Priority levels**: Low, Medium, High with color coding
+- **Due dates** with quick selection buttons (Today, Tomorrow, Next Week)
+- **Status tracking**: Todo → In Progress → Done workflow
+- **Modern task cards** with gradient backgrounds based on priority
 
 ## Quick Start
 

@@ -2,6 +2,25 @@
 
 All notable changes to the Task Dashboard application will be documented in this file.
 
+## [1.2.0] - 2025-07-23
+
+### Added
+- **Redesigned Task Detail Cards**: Completely modernized task cards with compact layout
+- **Improved Visibility**: Enhanced action buttons and metadata display
+- **Better Typography**: Smaller text for dates and improved readability
+- **Responsive Design**: Optimized card layout for all screen sizes
+
+### Changed
+- **Task Card Layout**: Moved from grid to compact horizontal metadata
+- **Button Design**: Smaller, more accessible action buttons
+- **Text Size**: Reduced date and metadata text for cleaner appearance
+- **Spacing**: Tighter spacing for more tasks visible per screen
+
+### Fixed
+- **Button Visibility**: Fixed delete/edit buttons being hidden
+- **Text Clipping**: Resolved truncation issues in task details
+- **Layout Overflow**: Fixed responsive layout issues
+
 ## [1.1.0] - 2025-07-23
 
 ### Added
