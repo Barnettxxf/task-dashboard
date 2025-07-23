@@ -5,7 +5,7 @@ from rxconfig import config
 
 from task_dashboard.models import Task, User
 from task_dashboard.state import State
-from task_dashboard.components import task_item, theme_toggle, user_profile_section, auth_buttons
+from task_dashboard.components import task_item, theme_toggle, user_profile_section, auth_buttons, language_selector
 from task_dashboard.modals import add_task_modal, login_modal, register_modal
 
 def index() -> rx.Component:
@@ -26,6 +26,7 @@ def index() -> rx.Component:
                             user_profile_section(),
                             auth_buttons()
                         ),
+                        language_selector(),
                         theme_toggle(),
                         spacing="3",
                         align="center"
@@ -41,15 +42,15 @@ def index() -> rx.Component:
                     ~State.is_authenticated,
                     rx.card(
                         rx.vstack(
-                            rx.heading("Welcome to Task Dashboard", size="6", class_name="text-center text-gray-900 dark:text-gray-100"),
+                            rx.heading(State.t_welcome_to_dashboard, size="6", class_name="text-center text-gray-900 dark:text-gray-100"),
                             rx.text(
-                                "Your personal task management solution. Create an account to get started with your own task dashboard.",
+                                State.t_dashboard_description,
                                 class_name="text-center text-gray-600 dark:text-gray-300",
                                 size="4"
                             ),
                             rx.hstack(
                                 rx.button(
-                                    "Get Started",
+                                    State.t_get_started,
                                     on_click=State.toggle_register_modal,
                                     variant="surface",
                                     size="3",
@@ -57,7 +58,7 @@ def index() -> rx.Component:
                                     class_name="font-medium"
                                 ),
                                 rx.button(
-                                    "Sign In",
+                                    State.t_sign_in,
                                     on_click=State.toggle_login_modal,
                                     variant="soft",
                                     size="3"
@@ -81,16 +82,16 @@ def index() -> rx.Component:
                         rx.grid(
                             rx.card(
                                 rx.vstack(
-                                    rx.text("Total Tasks", size="2", class_name="text-gray-500 dark:text-gray-300"),
+                                    rx.text(State.t_total_tasks, size="2", class_name="text-gray-500 dark:text-gray-300"),
                                     rx.text(State.total_tasks, size="6", weight="bold", color="blue"),
-                                    rx.text(f"{State.completion_rate}% complete", size="1", class_name="text-gray-500 dark:text-gray-300"),
+                                    rx.text(f"{State.completion_rate}% {State.t_completion_rate.lower()}", size="1", class_name="text-gray-500 dark:text-gray-300"),
                                     spacing="1"
                                 ),
                                 padding="4"
                             ),
                             rx.card(
                                 rx.vstack(
-                                    rx.text("To Do", size="2", class_name="text-gray-500 dark:text-gray-300"),
+                                    rx.text(State.t_todo, size="2", class_name="text-gray-500 dark:text-gray-300"),
                                     rx.text(State.todo_count, size="6", weight="bold", color="orange"),
                                     spacing="1"
                                 ),
@@ -98,7 +99,7 @@ def index() -> rx.Component:
                             ),
                             rx.card(
                                 rx.vstack(
-                                    rx.text("In Progress", size="2", class_name="text-gray-500 dark:text-gray-300"),
+                                    rx.text(State.t_in_progress, size="2", class_name="text-gray-500 dark:text-gray-300"),
                                     rx.text(State.in_progress_count, size="6", weight="bold", color="yellow"),
                                     spacing="1"
                                 ),
@@ -106,7 +107,7 @@ def index() -> rx.Component:
                             ),
                             rx.card(
                                 rx.vstack(
-                                    rx.text("Done", size="2", class_name="text-gray-500 dark:text-gray-300"),
+                                    rx.text(State.t_done, size="2", class_name="text-gray-500 dark:text-gray-300"),
                                     rx.text(State.done_count, size="6", weight="bold", color="green"),
                                     spacing="1"
                                 ),
@@ -121,38 +122,135 @@ def index() -> rx.Component:
                         rx.card(
                             rx.hstack(
                                 rx.input(
-                                    placeholder="Search tasks...",
+                                    placeholder=State.t_search_tasks,
                                     value=State.search_query,
                                     on_change=State.set_search_query,
                                     width="300px",
                                     class_name="border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white dark:bg-gray-700 dark:text-white"
                                 ),
                                 rx.select(
-                                    ["all", "todo", "in_progress", "done"],
-                                    placeholder="Filter by status",
-                                    value=State.filter_status,
-                                    on_change=State.set_filter_status,
+                                    rx.cond(
+                                        State.current_language == "zh",
+                                        ["全部", "待办", "进行中", "已完成"],
+                                        ["All", "To Do", "In Progress", "Done"]
+                                    ),
+                                    placeholder=State.t_filter_by_status,
+                                    value=rx.cond(
+                                        State.current_language == "zh",
+                                        rx.match(
+                                            State.filter_status,
+                                            ("all", "全部"),
+                                            ("todo", "待办"),
+                                            ("in_progress", "进行中"),
+                                            ("done", "已完成"),
+                                            State.filter_status
+                                        ),
+                                        rx.match(
+                                            State.filter_status,
+                                            ("all", "All"),
+                                            ("todo", "To Do"),
+                                            ("in_progress", "In Progress"),
+                                            ("done", "Done"),
+                                            State.filter_status
+                                        )
+                                    ),
+                                    on_change=lambda value: State.set_filter_status(
+                                        rx.match(
+                                            value,
+                                            ("全部", "all"),
+                                            ("待办", "todo"),
+                                            ("进行中", "in_progress"),
+                                            ("已完成", "done"),
+                                            ("All", "all"),
+                                            ("To Do", "todo"),
+                                            ("In Progress", "in_progress"),
+                                            ("Done", "done"),
+                                            value
+                                        )
+                                    ),
                                     width="150px",
                                     class_name="border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white dark:bg-gray-700 dark:text-white"
                                 ),
                                 rx.select(
-                                    ["created_at", "due_date", "priority", "title"],
-                                    placeholder="Sort by",
-                                    value=State.sort_by,
-                                    on_change=State.set_sort_by,
+                                    rx.cond(
+                                        State.current_language == "zh",
+                                        ["创建时间", "截止日期", "优先级", "标题"],
+                                        ["Created At", "Due Date", "Priority", "Title"]
+                                    ),
+                                    placeholder=State.t_sort_by,
+                                    value=rx.cond(
+                                        State.current_language == "zh",
+                                        rx.match(
+                                            State.sort_by,
+                                            ("created_at", "创建时间"),
+                                            ("due_date", "截止日期"),
+                                            ("priority", "优先级"),
+                                            ("title", "标题"),
+                                            State.sort_by
+                                        ),
+                                        rx.match(
+                                            State.sort_by,
+                                            ("created_at", "Created At"),
+                                            ("due_date", "Due Date"),
+                                            ("priority", "Priority"),
+                                            ("title", "Title"),
+                                            State.sort_by
+                                        )
+                                    ),
+                                    on_change=lambda value: State.set_sort_by(
+                                        rx.match(
+                                            value,
+                                            ("创建时间", "created_at"),
+                                            ("截止日期", "due_date"),
+                                            ("优先级", "priority"),
+                                            ("标题", "title"),
+                                            ("Created At", "created_at"),
+                                            ("Due Date", "due_date"),
+                                            ("Priority", "priority"),
+                                            ("Title", "title"),
+                                            value
+                                        )
+                                    ),
                                     width="150px",
                                     class_name="border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white dark:bg-gray-700 dark:text-white"
                                 ),
                                 rx.select(
-                                    ["asc", "desc"],
-                                    placeholder="Order",
-                                    value=State.sort_order,
-                                    on_change=State.set_sort_order,
+                                    rx.cond(
+                                        State.current_language == "zh",
+                                        ["升序", "降序"],
+                                        ["Ascending", "Descending"]
+                                    ),
+                                    placeholder=State.t_order,
+                                    value=rx.cond(
+                                        State.current_language == "zh",
+                                        rx.match(
+                                            State.sort_order,
+                                            ("asc", "升序"),
+                                            ("desc", "降序"),
+                                            State.sort_order
+                                        ),
+                                        rx.match(
+                                            State.sort_order,
+                                            ("asc", "Ascending"),
+                                            ("desc", "Descending"),
+                                            State.sort_order
+                                        )
+                                    ),
+                                    on_change=lambda value: State.set_sort_order(
+                                        rx.match(
+                                            value,
+                                            ("升序", "asc"),
+                                            ("降序", "desc"),
+                                            ("Ascending", "asc"),
+                                            ("Descending", "desc"),
+                                            value
+                                        )
+                                    ),
                                     width="100px",
                                     class_name="border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white dark:bg-gray-700 dark:text-white"
                                 ),
                                 rx.button(
-                                    "+ Add Task",
+                                    State.t_add_task,
                                     on_click=State.toggle_add_modal,
                                     color_scheme="blue",
                                     size="2",
@@ -169,7 +267,7 @@ def index() -> rx.Component:
                         # Task columns
                         rx.grid(
                             rx.vstack(
-                                rx.heading("To Do", size="5", class_name="text-gray-900 dark:text-gray-100"),
+                                rx.heading(State.t_todo, size="5", class_name="text-gray-900 dark:text-gray-100"),
                                 rx.text(f"({State.todo_count} tasks)", size="2", class_name="text-gray-500 dark:text-gray-400"),
                                 rx.foreach(
                                     State.tasks_by_status["todo"],
@@ -180,7 +278,7 @@ def index() -> rx.Component:
                                 align_items="stretch"
                             ),
                             rx.vstack(
-                                rx.heading("In Progress", size="5", class_name="text-gray-900 dark:text-gray-100"),
+                                rx.heading(State.t_in_progress, size="5", class_name="text-gray-900 dark:text-gray-100"),
                                 rx.text(f"({State.in_progress_count} tasks)", size="2", class_name="text-gray-500 dark:text-gray-400"),
                                 rx.foreach(
                                     State.tasks_by_status["in_progress"],
@@ -191,7 +289,7 @@ def index() -> rx.Component:
                                 align_items="stretch"
                             ),
                             rx.vstack(
-                                rx.heading("Done", size="5", class_name="text-gray-900 dark:text-gray-100"),
+                                rx.heading(State.t_done, size="5", class_name="text-gray-900 dark:text-gray-100"),
                                 rx.text(f"({State.done_count} tasks)", size="2", class_name="text-gray-500 dark:text-gray-400"),
                                 rx.foreach(
                                     State.tasks_by_status["done"],
@@ -210,7 +308,7 @@ def index() -> rx.Component:
                         rx.cond(
                             State.filtered_tasks.length() == 0,
                             rx.card(
-                                rx.text("No tasks found", text_align="center", class_name="text-gray-600 dark:text-gray-300"),
+                                rx.text(State.t_no_tasks_found, text_align="center", class_name="text-gray-600 dark:text-gray-300"),
                                 padding="8"
                             )
                         ),

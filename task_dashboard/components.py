@@ -18,7 +18,17 @@ def task_item(task: Task) -> rx.Component:
         rx.vstack(
             rx.hstack(
                 rx.text(task.title, font_weight="bold", class_name="truncate text-gray-900 dark:text-gray-100"),
-                rx.badge(task.priority.upper(), color_scheme=priority_color, size="1"),
+                rx.badge(
+                    rx.match(
+                        task.priority,
+                        ("low", State.t_low.upper()),
+                        ("medium", State.t_medium.upper()),
+                        ("high", State.t_high.upper()),
+                        task.priority.upper()
+                    ),
+                    color_scheme=priority_color, 
+                    size="1"
+                ),
                 justify="between",
                 align="center",
                 width="100%"
@@ -39,20 +49,52 @@ def task_item(task: Task) -> rx.Component:
             ),
             rx.hstack(
                 rx.select(
-                    ["todo", "in_progress", "done"],
-                    default_value=task.status,
-                    on_change=lambda value: State.update_task_status(task.id, value),
+                    rx.cond(
+                        State.current_language == "zh",
+                        ["待办", "进行中", "已完成"],
+                        ["To Do", "In Progress", "Done"]
+                    ),
+                    default_value=rx.cond(
+                        State.current_language == "zh",
+                        rx.match(
+                            task.status,
+                            ("todo", "待办"),
+                            ("in_progress", "进行中"),
+                            ("done", "已完成"),
+                            task.status
+                        ),
+                        rx.match(
+                            task.status,
+                            ("todo", "To Do"),
+                            ("in_progress", "In Progress"),
+                            ("done", "Done"),
+                            task.status
+                        )
+                    ),
+                    on_change=lambda value: State.update_task_status(
+                        task.id,
+                        rx.match(
+                            value,
+                            ("待办", "todo"),
+                            ("进行中", "in_progress"),
+                            ("已完成", "done"),
+                            ("To Do", "todo"),
+                            ("In Progress", "in_progress"),
+                            ("Done", "done"),
+                            value
+                        )
+                    ),
                     size="1",
                     width="100px"
                 ),
                 rx.button(
-                    "Edit",
+                    State.t_edit_task,
                     on_click=lambda: State.edit_task(task),
                     size="1",
                     variant="soft"
                 ),
                 rx.button(
-                    "Delete",
+                    State.t_delete_task,
                     on_click=lambda: State.delete_task(task.id),
                     size="1",
                     variant="soft",
@@ -84,7 +126,7 @@ def user_profile_section() -> rx.Component:
             align="center"
         ),
         rx.button(
-            "Logout",
+            State.t_logout,
             on_click=State.logout_user,
             variant="soft",
             size="1",
@@ -112,4 +154,24 @@ def auth_buttons() -> rx.Component:
             color_scheme="blue"
         ),
         spacing="2"
+    )
+
+def language_selector() -> rx.Component:
+    """Language selector component."""
+    return rx.select.root(
+        rx.select.trigger(
+            rx.cond(
+                State.current_language == "zh",
+                rx.text("中文", class_name="text-sm font-medium"),
+                rx.text("English", class_name="text-sm font-medium")
+            ),
+            class_name="text-sm"
+        ),
+        rx.select.content(
+            rx.select.item("English", value="en"),
+            rx.select.item("中文", value="zh"),
+        ),
+        value=State.current_language,
+        on_change=State.set_language,
+        width="100px"
     )

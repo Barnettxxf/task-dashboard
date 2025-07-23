@@ -6,6 +6,7 @@ from typing import List, Optional, Dict, Any
 
 from task_dashboard.models import Task, User
 from task_dashboard.database import db_manager, TaskModel
+from task_dashboard.translations import translation_manager
 
 class State(rx.State):
     """The app state for task management."""
@@ -51,6 +52,442 @@ class State(rx.State):
     show_login_modal: bool = False
     show_register_modal: bool = False
     continuous_add: bool = False
+    
+    # Translation
+    current_language: str = "en"
+    
+    @rx.var
+    def t_app_title(self) -> str:
+        """Get app title in current language."""
+        return translation_manager.get_translation(self.current_language, "app_title")
+    
+    @rx.var
+    def t_welcome_to_dashboard(self) -> str:
+        """Get welcome message in current language."""
+        return translation_manager.get_translation(self.current_language, "welcome_to_dashboard")
+    
+    @rx.var
+    def t_dashboard_description(self) -> str:
+        """Get dashboard description in current language."""
+        return translation_manager.get_translation(self.current_language, "dashboard_description")
+    
+    @rx.var
+    def t_get_started(self) -> str:
+        """Get get started button text in current language."""
+        return translation_manager.get_translation(self.current_language, "get_started")
+    
+    @rx.var
+    def t_sign_in(self) -> str:
+        """Get sign in button text in current language."""
+        return translation_manager.get_translation(self.current_language, "sign_in")
+    
+    @rx.var
+    def t_sign_up(self) -> str:
+        """Get sign up button text in current language."""
+        return translation_manager.get_translation(self.current_language, "sign_up")
+    
+    @rx.var
+    def t_total_tasks(self) -> str:
+        """Get total tasks text in current language."""
+        return translation_manager.get_translation(self.current_language, "total_tasks")
+    
+    @rx.var
+    def t_completion_rate(self) -> str:
+        """Get completion rate text in current language."""
+        return translation_manager.get_translation(self.current_language, "completion_rate")
+    
+    @rx.var
+    def t_todo(self) -> str:
+        """Get todo text in current language."""
+        return translation_manager.get_translation(self.current_language, "todo")
+    
+    @rx.var
+    def t_in_progress(self) -> str:
+        """Get in progress text in current language."""
+        return translation_manager.get_translation(self.current_language, "in_progress")
+    
+    @rx.var
+    def t_done(self) -> str:
+        """Get done text in current language."""
+        return translation_manager.get_translation(self.current_language, "done")
+    
+    @rx.var
+    def t_search_tasks(self) -> str:
+        """Get search tasks placeholder in current language."""
+        return translation_manager.get_translation(self.current_language, "search_tasks")
+    
+    @rx.var
+    def t_filter_by_status(self) -> str:
+        """Get filter by status placeholder in current language."""
+        return translation_manager.get_translation(self.current_language, "filter_by_status")
+    
+    @rx.var
+    def t_sort_by(self) -> str:
+        """Get sort by placeholder in current language."""
+        return translation_manager.get_translation(self.current_language, "sort_by")
+    
+    @rx.var
+    def t_order(self) -> str:
+        """Get order placeholder in current language."""
+        return translation_manager.get_translation(self.current_language, "order")
+    
+    @rx.var
+    def t_all(self) -> str:
+        """Get all text in current language."""
+        return translation_manager.get_translation(self.current_language, "all")
+    
+    @rx.var
+    def t_created_at(self) -> str:
+        """Get created at text in current language."""
+        return translation_manager.get_translation(self.current_language, "created_at")
+    
+    @rx.var
+    def t_title(self) -> str:
+        """Get title text in current language."""
+        return translation_manager.get_translation(self.current_language, "title")
+    
+    @rx.var
+    def t_ascending(self) -> str:
+        """Get ascending text in current language."""
+        return translation_manager.get_translation(self.current_language, "ascending")
+    
+    @rx.var
+    def t_descending(self) -> str:
+        """Get descending text in current language."""
+        return translation_manager.get_translation(self.current_language, "descending")
+    
+    def get_status_display(self, status: str) -> str:
+        """Get display text for status in current language."""
+        status_map = {
+            "todo": self.t_todo,
+            "in_progress": self.t_in_progress,
+            "done": self.t_done,
+            "all": self.t_all
+        }
+        return status_map.get(status, status)
+    
+    def get_priority_display(self, priority: str) -> str:
+        """Get display text for priority in current language."""
+        priority_map = {
+            "low": self.t_low,
+            "medium": self.t_medium,
+            "high": self.t_high
+        }
+        return priority_map.get(priority, priority)
+    
+    def get_sort_display(self, sort_by: str) -> str:
+        """Get display text for sort options in current language."""
+        sort_map = {
+            "created_at": self.t_created_at,
+            "due_date": self.t_due_date,
+            "priority": self.t_priority,
+            "title": self.t_title
+        }
+        return sort_map.get(sort_by, sort_by)
+    
+    def get_order_display(self, order: str) -> str:
+        """Get display text for order options in current language."""
+        order_map = {
+            "asc": self.t_ascending,
+            "desc": self.t_descending
+        }
+        return order_map.get(order, order)
+    
+    @rx.var
+    def t_add_task(self) -> str:
+        """Get add task text in current language."""
+        return translation_manager.get_translation(self.current_language, "add_task")
+    
+    @rx.var
+    def t_no_tasks_found(self) -> str:
+        """Get no tasks found text in current language."""
+        return translation_manager.get_translation(self.current_language, "no_tasks_found")
+    
+    @rx.var
+    def t_title(self) -> str:
+        """Get title text in current language."""
+        return translation_manager.get_translation(self.current_language, "title")
+    
+    @rx.var
+    def t_description(self) -> str:
+        """Get description text in current language."""
+        return translation_manager.get_translation(self.current_language, "description")
+    
+    @rx.var
+    def t_priority(self) -> str:
+        """Get priority text in current language."""
+        return translation_manager.get_translation(self.current_language, "priority")
+    
+    @rx.var
+    def t_status(self) -> str:
+        """Get status text in current language."""
+        return translation_manager.get_translation(self.current_language, "status")
+    
+    @rx.var
+    def t_due_date(self) -> str:
+        """Get due date text in current language."""
+        return translation_manager.get_translation(self.current_language, "due_date")
+    
+    @rx.var
+    def t_low(self) -> str:
+        """Get low priority text in current language."""
+        return translation_manager.get_translation(self.current_language, "low")
+    
+    @rx.var
+    def t_medium(self) -> str:
+        """Get medium priority text in current language."""
+        return translation_manager.get_translation(self.current_language, "medium")
+    
+    @rx.var
+    def t_high(self) -> str:
+        """Get high priority text in current language."""
+        return translation_manager.get_translation(self.current_language, "high")
+    
+    @rx.var
+    def t_clear(self) -> str:
+        """Get clear text in current language."""
+        return translation_manager.get_translation(self.current_language, "clear")
+    
+    @rx.var
+    def t_today(self) -> str:
+        """Get today text in current language."""
+        return translation_manager.get_translation(self.current_language, "today")
+    
+    @rx.var
+    def t_tomorrow(self) -> str:
+        """Get tomorrow text in current language."""
+        return translation_manager.get_translation(self.current_language, "tomorrow")
+    
+    @rx.var
+    def t_next_week(self) -> str:
+        """Get next week text in current language."""
+        return translation_manager.get_translation(self.current_language, "next_week")
+    
+    @rx.var
+    def t_keep_adding(self) -> str:
+        """Get keep adding text in current language."""
+        return translation_manager.get_translation(self.current_language, "keep_adding")
+    
+    @rx.var
+    def t_cancel(self) -> str:
+        """Get cancel text in current language."""
+        return translation_manager.get_translation(self.current_language, "cancel")
+    
+    @rx.var
+    def t_create_task(self) -> str:
+        """Get create task text in current language."""
+        return translation_manager.get_translation(self.current_language, "create_task")
+    
+    @rx.var
+    def t_save(self) -> str:
+        """Get save text in current language."""
+        return translation_manager.get_translation(self.current_language, "save")
+    
+    @rx.var
+    def t_username(self) -> str:
+        """Get username text in current language."""
+        return translation_manager.get_translation(self.current_language, "username")
+    
+    @rx.var
+    def t_email(self) -> str:
+        """Get email text in current language."""
+        return translation_manager.get_translation(self.current_language, "email")
+    
+    @rx.var
+    def t_password(self) -> str:
+        """Get password text in current language."""
+        return translation_manager.get_translation(self.current_language, "password")
+    
+    @rx.var
+    def t_confirm_password(self) -> str:
+        """Get confirm password text in current language."""
+        return translation_manager.get_translation(self.current_language, "confirm_password")
+    
+    @rx.var
+    def t_create_account(self) -> str:
+        """Get create account text in current language."""
+        return translation_manager.get_translation(self.current_language, "create_account")
+    
+    @rx.var
+    def t_already_have_account(self) -> str:
+        """Get already have account text in current language."""
+        return translation_manager.get_translation(self.current_language, "already_have_account")
+    
+    @rx.var
+    def t_dont_have_account(self) -> str:
+        """Get don't have account text in current language."""
+        return translation_manager.get_translation(self.current_language, "dont_have_account")
+    
+    @rx.var
+    def t_logout(self) -> str:
+        """Get logout text in current language."""
+        return translation_manager.get_translation(self.current_language, "logout")
+    
+    @rx.var
+    def t_sign_up_here(self) -> str:
+        """Get sign up here text in current language."""
+        return translation_manager.get_translation(self.current_language, "sign_up_here")
+    
+    @rx.var
+    def t_sign_in_here(self) -> str:
+        """Get sign in here text in current language."""
+        return translation_manager.get_translation(self.current_language, "sign_in_here")
+    
+    @rx.var
+    def t_edit_task(self) -> str:
+        """Get edit task text in current language."""
+        return translation_manager.get_translation(self.current_language, "edit_task")
+    
+    @rx.var
+    def t_delete_task(self) -> str:
+        """Get delete task text in current language."""
+        return translation_manager.get_translation(self.current_language, "delete_task")
+    
+    @rx.var
+    def t_update_task(self) -> str:
+        """Get update task text in current language."""
+        return translation_manager.get_translation(self.current_language, "update_task")
+    
+    @rx.var
+    def t_add_task(self) -> str:
+        """Get add task text in current language."""
+        return translation_manager.get_translation(self.current_language, "add_task")
+    
+    @rx.var
+    def t_create_task(self) -> str:
+        """Get create task text in current language."""
+        return translation_manager.get_translation(self.current_language, "create_task")
+    
+    @rx.var
+    def t_save(self) -> str:
+        """Get save text in current language."""
+        return translation_manager.get_translation(self.current_language, "save")
+    
+    @rx.var
+    def t_title(self) -> str:
+        """Get title text in current language."""
+        return translation_manager.get_translation(self.current_language, "title")
+    
+    @rx.var
+    def t_description(self) -> str:
+        """Get description text in current language."""
+        return translation_manager.get_translation(self.current_language, "description")
+    
+    @rx.var
+    def t_priority(self) -> str:
+        """Get priority text in current language."""
+        return translation_manager.get_translation(self.current_language, "priority")
+    
+    @rx.var
+    def t_due_date(self) -> str:
+        """Get due date text in current language."""
+        return translation_manager.get_translation(self.current_language, "due_date")
+    
+    @rx.var
+    def t_low(self) -> str:
+        """Get low priority text in current language."""
+        return translation_manager.get_translation(self.current_language, "low")
+    
+    @rx.var
+    def t_medium(self) -> str:
+        """Get medium priority text in current language."""
+        return translation_manager.get_translation(self.current_language, "medium")
+    
+    @rx.var
+    def t_high(self) -> str:
+        """Get high priority text in current language."""
+        return translation_manager.get_translation(self.current_language, "high")
+    
+    @rx.var
+    def t_clear(self) -> str:
+        """Get clear text in current language."""
+        return translation_manager.get_translation(self.current_language, "clear")
+    
+    @rx.var
+    def t_today(self) -> str:
+        """Get today text in current language."""
+        return translation_manager.get_translation(self.current_language, "today")
+    
+    @rx.var
+    def t_tomorrow(self) -> str:
+        """Get tomorrow text in current language."""
+        return translation_manager.get_translation(self.current_language, "tomorrow")
+    
+    @rx.var
+    def t_next_week(self) -> str:
+        """Get next week text in current language."""
+        return translation_manager.get_translation(self.current_language, "next_week")
+    
+    @rx.var
+    def t_keep_adding(self) -> str:
+        """Get keep adding text in current language."""
+        return translation_manager.get_translation(self.current_language, "keep_adding")
+    
+    @rx.var
+    def t_cancel(self) -> str:
+        """Get cancel text in current language."""
+        return translation_manager.get_translation(self.current_language, "cancel")
+    
+    @rx.var
+    def t_username(self) -> str:
+        """Get username text in current language."""
+        return translation_manager.get_translation(self.current_language, "username")
+    
+    @rx.var
+    def t_email(self) -> str:
+        """Get email text in current language."""
+        return translation_manager.get_translation(self.current_language, "email")
+    
+    @rx.var
+    def t_password(self) -> str:
+        """Get password text in current language."""
+        return translation_manager.get_translation(self.current_language, "password")
+    
+    @rx.var
+    def t_confirm_password(self) -> str:
+        """Get confirm password text in current language."""
+        return translation_manager.get_translation(self.current_language, "confirm_password")
+    
+    @rx.var
+    def t_create_account(self) -> str:
+        """Get create account text in current language."""
+        return translation_manager.get_translation(self.current_language, "create_account")
+    
+    @rx.var
+    def t_already_have_account(self) -> str:
+        """Get already have account text in current language."""
+        return translation_manager.get_translation(self.current_language, "already_have_account")
+    
+    @rx.var
+    def t_dont_have_account(self) -> str:
+        """Get don't have account text in current language."""
+        return translation_manager.get_translation(self.current_language, "dont_have_account")
+    
+    @rx.var
+    def t_logout(self) -> str:
+        """Get logout text in current language."""
+        return translation_manager.get_translation(self.current_language, "logout")
+    
+    @rx.var
+    def t_sign_up_here(self) -> str:
+        """Get sign up here text in current language."""
+        return translation_manager.get_translation(self.current_language, "sign_up_here")
+    
+    @rx.var
+    def t_sign_in_here(self) -> str:
+        """Get sign in here text in current language."""
+        return translation_manager.get_translation(self.current_language, "sign_in_here")
+    
+    @rx.var
+    def t_password_too_short(self) -> str:
+        """Get password too short text in current language."""
+        return translation_manager.get_translation(self.current_language, "password_too_short")
+    
+    @rx.event
+    def set_language(self, language: str):
+        """Set the current language."""
+        if language in translation_manager.get_available_languages():
+            self.current_language = language
     
     def toggle_add_modal(self):
         """Toggle the add task modal."""
