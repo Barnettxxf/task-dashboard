@@ -139,14 +139,23 @@ User Action → State Method → DB Update → Reactive Re-render
 - **Separation of Concerns**: UI components, state logic, and data models are modularized
 - **Reusable Components**: task_item, theme_toggle, auth_buttons are reusable across pages
 - **Modal System**: Centralized modal dialogs for forms (add task, login, register)
+- **Translation System**: Custom multilingual support with 60+ translated keys
 
 ### State Management
 - **Centralized State**: Single State class handles all business logic
 - **Reactive Updates**: Reflex automatically re-renders on state changes
 - **Database Sync**: State methods directly interact with SQLAlchemy models
 - **User Isolation**: All operations are scoped to authenticated user
+- **Language Management**: Real-time language switching with reactive translation updates
+
+### Translation System
+- **Custom i18n**: Dictionary-based translation manager with Chinese/English support
+- **Reactive Translations**: All UI elements update instantly on language change
+- **Select Options**: Custom translated dropdown options using rx.cond and rx.match
+- **State Variables**: 60+ reactive translation variables for complete UI localization
 
 ### Testing Strategy
 - **API Tests**: FastAPI TestClient for REST endpoint testing
 - **Auth Tests**: Dedicated authentication flow testing
 - **Database Tests**: Isolated test database with cleanup
+- **Translation Tests**: Verify multilingual UI consistency

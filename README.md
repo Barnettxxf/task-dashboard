@@ -1,6 +1,6 @@
-# Task Dashboard
+# Task Dashboard v1.0.0
 
-A modern, full-stack task management application built with Reflex (Python reactive web framework) and FastAPI. Features a responsive web interface with real-time updates and a comprehensive REST API.
+A modern, full-stack task management application built with Reflex (Python reactive web framework) and FastAPI. Features a responsive web interface with real-time updates, comprehensive REST API, and full bilingual support (English/Chinese).
 
 ![Task Dashboard UI](dashboard-ui.png)
 
@@ -12,6 +12,7 @@ A modern, full-stack task management application built with Reflex (Python react
 - **Task Filtering**: Filter by status, priority, and search terms
 - **Task Statistics**: Real-time completion rates and task counts
 - **Dark Mode**: Toggle between light and dark themes
+- **Bilingual Support**: Full English and Chinese language support
 - **Database**: SQLite by default, MySQL support available
 - **API Documentation**: Auto-generated Swagger/OpenAPI docs
 
@@ -144,6 +145,50 @@ Interactive API documentation is available at:
 - **Swagger UI**: http://localhost:8000/docs
 - **ReDoc**: http://localhost:8000/redoc
 
+## Language Support
+
+The application supports both English and Chinese languages with instant switching:
+
+- **Language Selector**: Located in the top-right corner of the web interface
+- **Instant Translation**: All UI elements update immediately when switching languages
+- **Comprehensive Coverage**: 60+ translated elements including buttons, labels, messages, and help text
+
+### Available Languages
+- **English** (en): Default language
+- **中文** (zh): Simplified Chinese
+
+### Adding New Languages
+To add support for additional languages:
+
+1. Edit `task_dashboard/translations.py`
+2. Add new language dictionary in the `translations` dictionary
+3. Add language to `get_available_languages()` method
+4. Restart the application
+
+Example structure for new language:
+```python
+"es": {
+    "app_title": "Panel de Tareas",
+    "sign_in": "Iniciar Sesión",
+    # ... add all required translation keys
+}
+```
+
+## Development
+
+### Architecture Overview
+The codebase follows a modular architecture with clear separation of concerns:
+
+- **task_dashboard.py**: Main Reflex application entry point
+- **api.py**: FastAPI REST endpoints with authentication
+- **auth.py**: JWT-based authentication utilities
+- **database.py**: SQLAlchemy models and database configuration
+- **models.py**: Pydantic data models for API responses
+- **state.py**: Centralized state management with translation support
+- **components.py**: Reusable UI components
+- **modals.py**: Modal dialogs for forms
+- **translations.py**: Multi-language support system
+
 ## Architecture
 
 ### Technology Stack
@@ -158,17 +203,24 @@ Interactive API documentation is available at:
 task-dashboard/
 ├── task_dashboard/
 │   ├── __init__.py
-│   ├── task_dashboard.py    # Main Reflex app
-│   ├── api.py              # FastAPI endpoints
-│   └── database.py         # SQLAlchemy models
+│   ├── task_dashboard.py  # Main Reflex app
+│   ├── api.py             # FastAPI endpoints
+│   ├── auth.py            # Authentication utilities
+│   ├── database.py        # SQLAlchemy models and DB config
+│   ├── models.py          # Pydantic data models
+│   ├── state.py           # Reflex State class with business logic
+│   ├── components.py      # Reusable UI components
+│   ├── modals.py          # Modal dialogs for forms
+│   └── translations.py    # Multi-language support (EN/ZH)
 ├── tests/
 │   ├── __init__.py
-│   └── test_api.py         # API tests
+│   ├── test_api.py        # API tests
+│   └── test_api_auth.py   # Authentication tests
 ├── assets/
 │   └── favicon.ico
-├── requirements.txt        # Python dependencies
-├── rxconfig.py            # Reflex configuration
-└── task_dashboard.db      # SQLite database
+├── requirements.txt       # Python dependencies
+├── rxconfig.py           # Reflex configuration
+└── task_dashboard.db     # SQLite database
 ```
 
 ### State Management
@@ -177,6 +229,7 @@ The application uses Reflex's reactive state management:
 - State methods update the database
 - Database changes automatically re-render the UI
 - All state is synchronized between web UI and database
+- **Bilingual Support**: Language switching handled through reactive translation system
 
 ## Task Model
 
@@ -198,6 +251,7 @@ Each task contains:
 - **Sorting**: Sort by creation date, due date, priority, or title
 - **Quick actions**: Edit, delete, and update status
 - **Responsive design**: Works on desktop, tablet, and mobile
+- **Bilingual UI**: Switch between English and Chinese with instant translation
 
 ### API Features
 - **Full CRUD operations**: Create, read, update, delete tasks
