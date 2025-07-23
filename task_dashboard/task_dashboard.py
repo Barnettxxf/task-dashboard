@@ -589,45 +589,83 @@ def index() -> rx.Component:
                                     class_name="bg-white dark:bg-gray-800 border-0 shadow-sm hover:shadow-md transition-all duration-200 mb-6"
                                 ),
                             
-                                # Task columns
+                                # Task columns with modern headers
                                 rx.grid(
+                                    # To Do Column
                                     rx.vstack(
-                                        rx.heading(State.t_todo, size="5", class_name="text-gray-900 dark:text-gray-100"),
-                                        rx.text(f"({State.todo_count.to_string()} tasks)", size="2", class_name="text-gray-500 dark:text-gray-400"),
+                                        rx.card(
+                                            rx.hstack(
+                                                rx.icon("circle", class_name="w-6 h-6 text-orange-500"),
+                                                rx.vstack(
+                                                    rx.heading(State.t_todo, size="5", weight="bold", class_name="text-gray-900 dark:text-gray-100"),
+                                                    rx.text(f"{State.todo_count.to_string()} tasks", size="2", class_name="text-orange-600 dark:text-orange-400 font-medium"),
+                                                    spacing="1"
+                                                ),
+                                                spacing="3",
+                                                align="center"
+                                            ),
+                                            class_name="bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 border-0 mb-4"
+                                        ),
                                         rx.foreach(
                                             State.tasks_by_status["todo"],
                                             task_item
                                         ),
-                                        spacing="2",
+                                        spacing="3",
                                         width="100%",
                                         align_items="stretch"
                                     ),
+                                    
+                                    # In Progress Column
                                     rx.vstack(
-                                        rx.heading(State.t_in_progress, size="5", class_name="text-gray-900 dark:text-gray-100"),
-                                        rx.text(f"({State.in_progress_count.to_string()} tasks)", size="2", class_name="text-gray-500 dark:text-gray-400"),
+                                        rx.card(
+                                            rx.hstack(
+                                                rx.icon("loader", class_name="w-6 h-6 text-yellow-500 animate-spin"),
+                                                rx.vstack(
+                                                    rx.heading(State.t_in_progress, size="5", weight="bold", class_name="text-gray-900 dark:text-gray-100"),
+                                                    rx.text(f"{State.in_progress_count.to_string()} tasks", size="2", class_name="text-yellow-600 dark:text-yellow-400 font-medium"),
+                                                    spacing="1"
+                                                ),
+                                                spacing="3",
+                                                align="center"
+                                            ),
+                                            class_name="bg-gradient-to-r from-yellow-50 to-yellow-100 dark:from-yellow-900/20 dark:to-yellow-800/20 border-0 mb-4"
+                                        ),
                                         rx.foreach(
                                             State.tasks_by_status["in_progress"],
                                             task_item
                                         ),
-                                        spacing="2",
+                                        spacing="3",
                                         width="100%",
                                         align_items="stretch"
                                     ),
+                                    
+                                    # Done Column
                                     rx.vstack(
-                                        rx.heading(State.t_done, size="5", class_name="text-gray-900 dark:text-gray-100"),
-                                        rx.text(f"({State.done_count.to_string()} tasks)", size="2", class_name="text-gray-500 dark:text-gray-400"),
+                                        rx.card(
+                                            rx.hstack(
+                                                rx.icon("circle-check", class_name="w-6 h-6 text-green-500"),
+                                                rx.vstack(
+                                                    rx.heading(State.t_done, size="5", weight="bold", class_name="text-gray-900 dark:text-gray-100"),
+                                                    rx.text(f"{State.done_count.to_string()} tasks", size="2", class_name="text-green-600 dark:text-green-400 font-medium"),
+                                                    spacing="1"
+                                                ),
+                                                spacing="3",
+                                                align="center"
+                                            ),
+                                            class_name="bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 border-0 mb-4"
+                                        ),
                                         rx.foreach(
                                             State.tasks_by_status["done"],
                                             task_item
                                         ),
-                                        spacing="2",
+                                        spacing="3",
                                         width="100%",
                                         align_items="stretch"
                                     ),
                                     columns="3",
-                                    spacing="4",
+                                    spacing="6",
                                     width="100%",
-                                    class_name="grid-cols-1 md:grid-cols-3"
+                                    class_name="grid-cols-1 md:grid-cols-3 gap-6"
                                 ),
                                 
                                 rx.cond(
