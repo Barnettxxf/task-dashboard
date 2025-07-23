@@ -49,6 +49,17 @@ class TranslationManager:
                 # Statistics
                 "total_tasks": "Total Tasks",
                 "completion_rate": "Completion Rate",
+                "statistics": "Statistics",
+                "dashboard": "Dashboard",
+                "task_management": "Task Management",
+                "tasks_page": "Tasks",
+                "stats_page": "Statistics",
+                "task_statistics": "Task Statistics",
+                "task_breakdown": "Task Breakdown",
+                "priority_breakdown": "Priority Breakdown", 
+                "todo_percentage": "To Do %",
+                "in_progress_percentage": "In Progress %",
+                "done_percentage": "Done %",
                 
                 # Filters
                 "search_tasks": "Search tasks...",
@@ -149,6 +160,17 @@ class TranslationManager:
                 # Statistics
                 "total_tasks": "总任务数",
                 "completion_rate": "完成率",
+                "statistics": "统计",
+                "dashboard": "仪表盘",
+                "task_management": "任务管理",
+                "tasks_page": "任务",
+                "stats_page": "统计",
+                "task_statistics": "任务统计",
+                "task_breakdown": "任务分布",
+                "priority_breakdown": "优先级分布",
+                "todo_percentage": "待办百分比",
+                "in_progress_percentage": "进行中百分比",
+                "done_percentage": "已完成百分比",
                 
                 # Filters
                 "search_tasks": "搜索任务...",

@@ -45,13 +45,16 @@ class State(rx.State):
     
     # Pagination
     items_per_page: int = 20
-    current_page: int = 1
+    page_number: int = 1  # Renamed to avoid conflict with navigation
     
     # UI State
     show_add_modal: bool = False
     show_login_modal: bool = False
     show_register_modal: bool = False
     continuous_add: bool = False
+    
+    # Navigation
+    current_page: str = "tasks"  # "tasks", "stats"
     
     # Translation
     current_language: str = "en"
@@ -493,6 +496,67 @@ class State(rx.State):
         """Toggle the add task modal."""
         self.show_add_modal = not self.show_add_modal
     
+    @rx.var
+    def t_statistics(self) -> str:
+        """Get statistics text in current language."""
+        return translation_manager.get_translation(self.current_language, "statistics")
+    
+    @rx.var
+    def t_dashboard(self) -> str:
+        """Get dashboard text in current language."""
+        return translation_manager.get_translation(self.current_language, "dashboard")
+    
+    @rx.var
+    def t_task_management(self) -> str:
+        """Get task management text in current language."""
+        return translation_manager.get_translation(self.current_language, "task_management")
+    
+    @rx.var
+    def t_tasks_page(self) -> str:
+        """Get tasks page text in current language."""
+        return translation_manager.get_translation(self.current_language, "tasks_page")
+    
+    @rx.var
+    def t_stats_page(self) -> str:
+        """Get stats page text in current language."""
+        return translation_manager.get_translation(self.current_language, "stats_page")
+    
+    @rx.var
+    def t_task_statistics(self) -> str:
+        """Get task statistics text in current language."""
+        return translation_manager.get_translation(self.current_language, "task_statistics")
+    
+    @rx.var
+    def t_task_breakdown(self) -> str:
+        """Get task breakdown text in current language."""
+        return translation_manager.get_translation(self.current_language, "task_breakdown")
+    
+    @rx.var
+    def t_priority_breakdown(self) -> str:
+        """Get priority breakdown text in current language."""
+        return translation_manager.get_translation(self.current_language, "priority_breakdown")
+    
+    @rx.var
+    def todo_percentage(self) -> int:
+        """Get todo percentage."""
+        total = len(self.tasks)
+        todo = len([t for t in self.tasks if t.status == "todo"])
+        return int(todo / total * 100) if total > 0 else 0
+    
+    @rx.var
+    def in_progress_percentage(self) -> int:
+        """Get in progress percentage."""
+        total = len(self.tasks)
+        in_progress = len([t for t in self.tasks if t.status == "in_progress"])
+        return int(in_progress / total * 100) if total > 0 else 0
+    
+    @rx.var
+    def done_percentage(self) -> int:
+        """Get done percentage."""
+        total = len(self.tasks)
+        done = len([t for t in self.tasks if t.status == "done"])
+        return int(done / total * 100) if total > 0 else 0
+
     def reset_form(self):
         """Reset form fields."""
         self.new_task_title = ""
@@ -890,3 +954,7 @@ class State(rx.State):
             "in_progress": [task for task in self.filtered_tasks if task.status == "in_progress"],
             "done": [task for task in self.filtered_tasks if task.status == "done"]
         }
+    
+    def navigate_to_page(self, page: str):
+        """Navigate to a specific page."""
+        self.current_page = page
