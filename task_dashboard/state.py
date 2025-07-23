@@ -1,12 +1,17 @@
 """State management for task dashboard application."""
 
 import reflex as rx
-from datetime import datetime, timedelta
+from datetime import datetime, timezone
 from typing import List, Optional, Dict, Any
+import bleach
 
 from task_dashboard.models import Task, User
 from task_dashboard.database import db_manager, TaskModel
 from task_dashboard.translations import translation_manager
+
+def get_utc_now():
+    """Get current UTC time."""
+    return datetime.now(timezone.utc)
 
 class State(rx.State):
     """The app state for task management."""
@@ -681,15 +686,20 @@ class State(rx.State):
         if not self.is_authenticated or not self.current_user:
             return rx.toast.error("Please login to add tasks")
             
-        if not self.new_task_title.strip():
+        title = self.new_task_title.strip()
+        if not title:
             return
+            
+        # Sanitize inputs to prevent XSS
+        title = bleach.clean(title)
+        description = bleach.clean(self.new_task_description.strip())
             
         try:
             with db_manager.get_session() as session:
                 new_db_task = TaskModel(
                     user_id=self.current_user.id,
-                    title=self.new_task_title.strip(),
-                    description=self.new_task_description.strip(),
+                    title=title,
+                    description=description,
                     status="todo",
                     priority=self.new_task_priority,
                     due_date=self.new_task_due_date if self.new_task_due_date else None
@@ -724,8 +734,13 @@ class State(rx.State):
         if not self.is_authenticated or not self.current_user:
             return rx.toast.error("Please login to update tasks")
             
-        if not self.editing_task or not self.new_task_title.strip():
+        title = self.new_task_title.strip()
+        if not self.editing_task or not title:
             return
+            
+        # Sanitize inputs to prevent XSS
+        title = bleach.clean(title)
+        description = bleach.clean(self.new_task_description.strip())
             
         try:
             with db_manager.get_session() as session:
@@ -735,11 +750,11 @@ class State(rx.State):
                 ).first()
                 
                 if db_task:
-                    db_task.title = self.new_task_title.strip()
-                    db_task.description = self.new_task_description.strip()
+                    db_task.title = title
+                    db_task.description = description
                     db_task.priority = self.new_task_priority
                     db_task.due_date = self.new_task_due_date if self.new_task_due_date else None
-                    db_task.updated_at = datetime.utcnow()
+                    db_task.updated_at = get_utc_now()
                     session.commit()
                     
                     # Update in-memory state
@@ -823,7 +838,7 @@ class State(rx.State):
                 
                 if db_task:
                     db_task.status = new_status
-                    db_task.updated_at = datetime.utcnow()
+                    db_task.updated_at = get_utc_now()
                     session.commit()
                     
                     # Update in-memory state

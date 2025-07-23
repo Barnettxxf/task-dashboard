@@ -2,6 +2,26 @@
 
 All notable changes to the Task Dashboard application will be documented in this file.
 
+## [1.2.0] - 2025-07-23
+
+### Added
+- **Rate Limiting**: Implemented API rate limiting using slowapi to prevent abuse
+- **Enhanced Security**: Added password strength validation and secure password hashing
+- **Security Tests**: New test suite for authentication security validation
+- **Password Migration**: Script to migrate existing passwords to bcrypt hashing
+- **Cloud Deployment**: Configuration file for cloud deployment (cloud.yml)
+
+### Changed
+- **Authentication**: Enhanced authentication with bcrypt password hashing
+- **API Security**: Added rate limiting to all authentication endpoints
+- **Password Validation**: Strengthened password requirements (min 6 characters)
+- **Dependency Management**: Added slowapi for rate limiting functionality
+
+### Fixed
+- **Security Vulnerabilities**: Addressed potential security issues in authentication
+- **Test Suite**: Updated tests to handle new security features
+- **Rate Limiting**: Fixed test failures related to rate limiting implementation
+
 ## [1.0.2] - 2025-07-23
 
 ### Added
@@ -63,12 +83,3 @@ All notable changes to the Task Dashboard application will be documented in this
 - **Translation Support**: Extended translation keys for new navigation elements
 - **Responsive Design**: Implemented Tailwind CSS grid system for all screen sizes
 - **Performance**: Optimized reactive variable handling in statistics calculations
-
-## [1.0.0] - 2025-07-23
-
-### Initial Release
-- Basic task management functionality
-- User authentication system
-- Multi-language support (English/Chinese)
-- Responsive design foundation
-- REST API integration

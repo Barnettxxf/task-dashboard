@@ -1,4 +1,4 @@
-# Task Dashboard v1.0.2
+# Task Dashboard v1.2.0
 
 A modern, full-stack task management application built with Reflex (Python reactive web framework) and FastAPI. Features a responsive web interface with real-time updates, comprehensive REST API, and full bilingual support (English/Chinese).
 

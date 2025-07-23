@@ -1,5 +1,6 @@
 """Authentication and user management functionality."""
 
+import bcrypt
 import hashlib
 import secrets
 from typing import Optional
@@ -10,20 +11,25 @@ class AuthManager:
     
     @staticmethod
     def hash_password(password: str) -> str:
-        """Hash password using SHA-256."""
-        salt = secrets.token_hex(16)
-        password_hash = hashlib.sha256((password + salt).encode()).hexdigest()
-        return f"{salt}${password_hash}"
+        """Hash password using bcrypt."""
+        salt = bcrypt.gensalt()
+        password_hash = bcrypt.hashpw(password.encode('utf-8'), salt)
+        return password_hash.decode('utf-8')
     
     @staticmethod
     def verify_password(password: str, stored_hash: str) -> bool:
         """Verify password against stored hash."""
         try:
-            salt, hash_value = stored_hash.split('$')
-            password_hash = hashlib.sha256((password + salt).encode()).hexdigest()
-            return password_hash == hash_value
+            # First try bcrypt (new format)
+            return bcrypt.checkpw(password.encode('utf-8'), stored_hash.encode('utf-8'))
         except:
-            return False
+            # If bcrypt fails, try old SHA-256 format for backward compatibility
+            try:
+                salt, hash_value = stored_hash.split('$')
+                password_hash = hashlib.sha256((password + salt).encode()).hexdigest()
+                return password_hash == hash_value
+            except:
+                return False
     
     @staticmethod
     def create_user(username: str, email: str, password: str) -> Optional[dict]:

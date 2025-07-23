@@ -2,11 +2,14 @@
 
 import os
 from sqlalchemy import create_engine, Column, String, Integer, DateTime, Text
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from datetime import datetime
+from sqlalchemy.orm import declarative_base, sessionmaker
+from datetime import datetime, timezone
 
 Base = declarative_base()
+
+def get_utc_now():
+    """Get current UTC time."""
+    return datetime.now(timezone.utc)
 
 class UserModel(Base):
     """SQLAlchemy model for users."""
@@ -16,8 +19,8 @@ class UserModel(Base):
     username = Column(String(80), unique=True, nullable=False)
     email = Column(String(120), unique=True, nullable=False)
     password_hash = Column(String(255), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=get_utc_now)
+    updated_at = Column(DateTime, default=get_utc_now, onupdate=get_utc_now)
 
 class TaskModel(Base):
     """SQLAlchemy model for tasks."""
@@ -30,8 +33,8 @@ class TaskModel(Base):
     status = Column(String(20), default='todo')
     priority = Column(String(10), default='medium')
     due_date = Column(String(10))
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=get_utc_now)
+    updated_at = Column(DateTime, default=get_utc_now, onupdate=get_utc_now)
 
 class DatabaseManager:
     """Database connection and session management."""

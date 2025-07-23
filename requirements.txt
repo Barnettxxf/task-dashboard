@@ -6,3 +6,6 @@ aiosqlite
 pymysql
 fastapi
 uvicorn
+bcrypt
+bleach
+slowapi

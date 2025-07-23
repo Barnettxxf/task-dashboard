@@ -43,10 +43,13 @@ def setup_test_db():
 @pytest.fixture
 def auth_headers():
     """Create and authenticate a test user, return auth headers."""
-    # Create test user
+    import uuid
+    unique_suffix = str(uuid.uuid4())[:8]
+    
+    # Create test user with unique name to avoid rate limiting
     user_data = {
-        "username": "testuser",
-        "email": "test@example.com",
+        "username": f"testuser_{unique_suffix}",
+        "email": f"test_{unique_suffix}@example.com",
         "password": "testpass123"
     }
     
@@ -55,7 +58,7 @@ def auth_headers():
     if response.status_code != 201:
         # Try login if user exists
         login_response = client.post("/auth/login", json={
-            "username": "testuser",
+            "username": user_data["username"],
             "password": "testpass123"
         })
         assert login_response.status_code == 200
@@ -153,7 +156,8 @@ class TestTaskCRUDOperations:
         """Test creating a task with empty title."""
         task_data = {"title": "   "}
         response = client.post("/tasks", json=task_data, headers=auth_headers)
-        assert response.status_code == 201  # API allows empty titles after strip
+        assert response.status_code == 400  # API now rejects empty titles after strip
+        assert response.json()["detail"] == "Title is required"
     
     def test_get_all_tasks_empty(self, auth_headers):
         """Test getting tasks when database is empty."""
@@ -348,13 +352,15 @@ class TestTaskValidation:
         """Test creating task with invalid priority."""
         task_data = {"title": "Test", "priority": "invalid"}
         response = client.post("/tasks", json=task_data, headers=auth_headers)
-        assert response.status_code == 201  # API allows any string for priority
+        assert response.status_code == 422  # API now validates priority values
+        assert "Priority must be one of" in response.json()["detail"][0]["msg"]
     
     def test_invalid_date_format(self, auth_headers):
         """Test creating task with invalid date format."""
         task_data = {"title": "Test", "due_date": "invalid-date"}
         response = client.post("/tasks", json=task_data, headers=auth_headers)
-        assert response.status_code == 201  # API allows any string for due_date
+        assert response.status_code == 422  # API now validates date format
+        assert "String should match pattern" in response.json()["detail"][0]["msg"]
     
     def test_empty_json_body(self, auth_headers):
         """Test creating task with empty JSON body."""
@@ -371,8 +377,8 @@ class TestTaskEdgeCases:
     """Test edge cases and boundary conditions."""
     
     def test_long_title(self, auth_headers):
-        """Test creating task with very long title."""
-        long_title = "x" * 1000
+        """Test creating task with very long title (up to limit)."""
+        long_title = "x" * 255  # Max allowed title length
         task_data = {"title": long_title}
         response = client.post("/tasks", json=task_data, headers=auth_headers)
         assert response.status_code == 201
