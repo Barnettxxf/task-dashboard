@@ -103,19 +103,6 @@ def index() -> rx.Component:
                             State.current_page == "stats",
                             # Statistics Page
                             rx.vstack(
-                                # Page Header
-                                rx.hstack(
-                                    rx.icon("bar-chart-3", size=28, class_name="text-blue-600 dark:text-blue-400"),
-                                    rx.heading(
-                                        State.t_task_statistics,
-                                        size="7",
-                                        weight="bold",
-                                        class_name="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
-                                    ),
-                                    spacing="3",
-                                    align="center"
-                                ),
-                                
                                 # Modern Stats Cards with Gradient Backgrounds
                                 rx.grid(
                                     # Total Tasks Card
@@ -188,7 +175,7 @@ def index() -> rx.Component:
                                             ),
                                             rx.spacer(),
                                             rx.box(
-                                                rx.icon("loader", size=32, class_name="text-white/80 animate-spin"),
+                                                rx.icon("loader", size=32, class_name="text-white/80"),
                                                 class_name="bg-white/20 rounded-full p-3"
                                             ),
                                             spacing="4",
@@ -619,7 +606,7 @@ def index() -> rx.Component:
                                     rx.vstack(
                                         rx.card(
                                             rx.hstack(
-                                                rx.icon("loader", class_name="w-6 h-6 text-yellow-500 animate-spin"),
+                                                rx.icon("loader", class_name="w-6 h-6 text-yellow-500"),
                                                 rx.vstack(
                                                     rx.heading(State.t_in_progress, size="5", weight="bold", class_name="text-gray-900 dark:text-gray-100"),
                                                     rx.text(f"{State.in_progress_count.to_string()} tasks", size="2", class_name="text-yellow-600 dark:text-yellow-400 font-medium"),
