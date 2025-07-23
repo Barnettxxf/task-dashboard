@@ -133,7 +133,15 @@ python -m pytest tests/ --cov=task_dashboard
 
 The REST API is available at `http://localhost:8000` when running the API server.
 
-### Endpoints
+### Authentication
+All API endpoints require authentication via Bearer token. Use the following endpoints to manage authentication:
+
+- **POST** `/auth/register` - Register new user account
+- **POST** `/auth/login` - Login and receive Bearer token
+- **GET** `/auth/me` - Get current user information
+
+### Protected Endpoints
+All task endpoints require Bearer token authentication:
 
 - **GET** `/tasks` - List all tasks with optional filtering
 - **POST** `/tasks` - Create a new task
@@ -146,18 +154,36 @@ The REST API is available at `http://localhost:8000` when running the API server
 ### API Examples
 
 ```bash
-# List all tasks
-curl http://localhost:8000/tasks
+# Register new user
+curl -X POST http://localhost:8000/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "user1",
+    "email": "user1@example.com",
+    "password": "password123"
+  }'
+
+# Login to get Bearer token
+curl -X POST http://localhost:8000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "user1",
+    "password": "password123"
+  }'
+
+# List all tasks (with Bearer token)
+curl -H "Authorization: Bearer user1" http://localhost:8000/tasks
 
 # Filter tasks by status and priority
-curl "http://localhost:8000/tasks?status=todo&priority=high"
+curl -H "Authorization: Bearer user1" "http://localhost:8000/tasks?status=todo&priority=high"
 
 # Search tasks
-curl "http://localhost:8000/tasks?search=urgent"
+curl -H "Authorization: Bearer user1" "http://localhost:8000/tasks?search=urgent"
 
-# Create a new task
+# Create a new task (with Bearer token)
 curl -X POST http://localhost:8000/tasks \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer user1" \
   -d '{
     "title": "Complete project documentation",
     "description": "Write comprehensive README and API docs",
@@ -168,7 +194,11 @@ curl -X POST http://localhost:8000/tasks \
 # Update task status
 curl -X PATCH http://localhost:8000/tasks/1/status \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer user1" \
   -d '{"status": "done"}'
+
+# Get current user info
+curl -H "Authorization: Bearer user1" http://localhost:8000/auth/me
 ```
 
 ### API Documentation
