@@ -1,0 +1,24 @@
+[Unit]
+Description=Task Dashboard Application
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/path/to/your/task-dashboard
+Environment=REFLEX_ENV_MODE=prod
+ExecStart=/path/to/your/venv/bin/reflex run --env prod
+Restart=always
+RestartSec=3
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=task-dashboard
+
+[Install]
+WantedBy=multi-user.target

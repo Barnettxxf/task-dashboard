@@ -7,4 +7,3 @@ assets/external/
 .idea
 .env
 .env.production
-deploy/
