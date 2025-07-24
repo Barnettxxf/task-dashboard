@@ -212,6 +212,48 @@ Example structure for new language:
 }
 ```
 
+### Deploying the Application
+
+#### Deployment Files
+The application includes deployment configuration files in the `deploy/` directory:
+- `nginx.conf` - Nginx reverse proxy configuration
+- `task-dashboard.service` - Systemd service file for running the application
+- `deploy.sh` - Automated deployment script that uses environment variables
+- `README.md` - Deployment instructions
+
+#### Deployment Process
+1. Set the required environment variables:
+   ```bash
+   export DOMAIN_NAME=your-domain.com
+   export SSL_CERT_PATH=/path/to/certificate.crt
+   export SSL_KEY_PATH=/path/to/private.key
+   export APP_PATH=/path/to/task-dashboard
+   export VENV_PATH=/path/to/venv
+   export SERVICE_USER=www-data
+   ```
+
+2. Run the automated deployment script:
+   ```bash
+   cd deploy/
+   ./deploy.sh all
+   ```
+
+3. Start the service:
+   ```bash
+   sudo systemctl start task-dashboard
+   ```
+
+#### Environment Configuration
+For production deployment, use the `.env.production` file with MySQL configuration:
+```bash
+DB_TYPE=mysql
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=your_user
+DB_PASSWORD=your_password
+DB_NAME=task_dashboard
+```
+
 ### Adding New Task Fields
 1. Update `TaskModel` in `database.py` with new column
 2. Update `Task` Pydantic model in `models.py`

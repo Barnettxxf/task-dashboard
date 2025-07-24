@@ -1,4 +1,4 @@
-# Task Dashboard v1.2.0
+# Task Dashboard v1.1.0
 
 A modern, full-stack task management application built with Reflex (Python reactive web framework) and FastAPI. Features a responsive web interface with real-time updates, comprehensive REST API, and full bilingual support (English/Chinese).
 
@@ -132,6 +132,59 @@ DB_NAME=task_dashboard
 To use MySQL, either:
 1. Set `DB_TYPE=mysql` in your .env file
 2. Or use the `.env.production` file
+
+### Deployment
+
+The application includes deployment configuration files in the `deploy/` directory:
+
+- `nginx.conf` - Nginx reverse proxy configuration
+- `task-dashboard.service` - Systemd service file for running the application
+- `deploy.sh` - Automated deployment script that uses environment variables
+- `README.md` - Deployment instructions
+
+#### Automated Deployment
+
+1. Set the required environment variables:
+   ```bash
+   export DOMAIN_NAME=your-domain.com
+   export SSL_CERT_PATH=/path/to/certificate.crt
+   export SSL_KEY_PATH=/path/to/private.key
+   export APP_PATH=/path/to/task-dashboard
+   export VENV_PATH=/path/to/venv
+   export SERVICE_USER=www-data
+   ```
+
+2. Run the automated deployment script:
+   ```bash
+   cd deploy/
+   ./deploy.sh all
+   ```
+
+3. Start the service:
+   ```bash
+   sudo systemctl start task-dashboard
+   ```
+
+#### Manual Deployment
+
+1. Configure nginx:
+   ```bash
+   sudo cp deploy/nginx.conf /etc/nginx/sites-available/task-dashboard
+   sudo ln -s /etc/nginx/sites-available/task-dashboard /etc/nginx/sites-enabled/
+   sudo nginx -t && sudo systemctl reload nginx
+   ```
+
+2. Configure systemd service:
+   ```bash
+   sudo cp deploy/task-dashboard.service /etc/systemd/system/
+   sudo systemctl daemon-reload
+   sudo systemctl enable task-dashboard
+   ```
+
+3. Start the service:
+   ```bash
+   sudo systemctl start task-dashboard
+   ```
 
 ### Testing
 
