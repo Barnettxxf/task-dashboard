@@ -4,6 +4,11 @@ import os
 from sqlalchemy import create_engine, Column, String, Integer, DateTime, Text
 from sqlalchemy.orm import declarative_base, sessionmaker
 from datetime import datetime, timezone
+from urllib.parse import quote_plus
+
+# Load environment variables from .env file
+from dotenv import load_dotenv
+load_dotenv()
 
 Base = declarative_base()
 
@@ -46,21 +51,25 @@ class DatabaseManager:
     
     def setup_database(self):
         """Setup database connection based on environment."""
-        db_type = os.getenv('DB_TYPE', 'sqlite').lower()
+        db_type = os.getenv('DB_TYPE', 'sqlite').lower().strip()
         
         if db_type == 'mysql':
             # MySQL configuration
-            db_host = os.getenv('DB_HOST', 'localhost')
-            db_port = os.getenv('DB_PORT', '3306')
-            db_user = os.getenv('DB_USER', 'root')
-            db_password = os.getenv('DB_PASSWORD', '')
-            db_name = os.getenv('DB_NAME', 'task_dashboard')
+            db_host = os.getenv('DB_HOST', 'localhost').strip()
+            db_port = os.getenv('DB_PORT', '3306').strip()
+            db_user = os.getenv('DB_USER', 'root').strip()
+            db_password = os.getenv('DB_PASSWORD', '').strip()
+            db_name = os.getenv('DB_NAME', 'task_dashboard').strip()
             
-            connection_string = f"mysql+pymysql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
+            # URL encode the password to handle special characters
+            encoded_password = quote_plus(db_password)
+            connection_string = f"mysql+pymysql://{db_user}:{encoded_password}@{db_host}:{db_port}/{db_name}"
+            print('use mysql')
         else:
             # Default SQLite configuration
-            db_path = os.getenv('DB_PATH', 'task_dashboard.db')
+            db_path = os.getenv('DB_PATH', 'task_dashboard.db').strip()
             connection_string = f"sqlite:///{db_path}"
+            print('use sqlite')
         
         self.engine = create_engine(connection_string, echo=False)
         self.SessionLocal = sessionmaker(bind=self.engine)

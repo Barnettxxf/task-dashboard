@@ -10,12 +10,16 @@ All notable changes to the Task Dashboard application will be documented in this
 - **Security Tests**: New test suite for authentication security validation
 - **Password Migration**: Script to migrate existing passwords to bcrypt hashing
 - **Cloud Deployment**: Configuration file for cloud deployment (cloud.yml)
+- **Environment Configuration**: Added .env.production file for production MySQL configuration
+- **Database Flexibility**: Support for both SQLite (development) and MySQL (production) databases
 
 ### Changed
 - **Authentication**: Enhanced authentication with bcrypt password hashing
 - **API Security**: Added rate limiting to all authentication endpoints
 - **Password Validation**: Strengthened password requirements (min 6 characters)
 - **Dependency Management**: Added slowapi for rate limiting functionality
+- **Database Configuration**: Improved environment variable handling with .strip() to prevent whitespace issues
+- **Database Connection**: Added URL encoding for MySQL passwords to handle special characters
 
 ### Fixed
 - **Security Vulnerabilities**: Addressed potential security issues in authentication

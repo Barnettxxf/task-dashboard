@@ -107,16 +107,31 @@ reflex export
 
 ### Database Configuration
 
-The application uses SQLite by default. To use MySQL:
+The application supports both SQLite (default for development) and MySQL (for production).
 
+#### Environment Files
+- `.env` - Development configuration (default: SQLite)
+- `.env.production` - Production configuration (MySQL)
+
+#### SQLite Configuration (Default)
 ```bash
-export DB_TYPE=mysql
-export DB_HOST=localhost
-export DB_PORT=3306
-export DB_USER=root
-export DB_PASSWORD=password
-export DB_NAME=task_dashboard
+DB_TYPE=sqlite
+DB_PATH=task_dashboard.db
 ```
+
+#### MySQL Configuration
+```bash
+DB_TYPE=mysql
+DB_HOST=your_mysql_host
+DB_PORT=3306
+DB_USER=your_mysql_user
+DB_PASSWORD=your_mysql_password
+DB_NAME=task_dashboard
+```
+
+To use MySQL, either:
+1. Set `DB_TYPE=mysql` in your .env file
+2. Or use the `.env.production` file
 
 ### Testing
 

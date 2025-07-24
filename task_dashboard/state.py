@@ -1,7 +1,7 @@
 """State management for task dashboard application."""
 
 import reflex as rx
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from typing import List, Optional, Dict, Any
 import bleach
 

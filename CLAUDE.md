@@ -34,13 +34,31 @@ python tests/test_api_auth.py -v    # Run auth tests only
 ```
 
 ### Database Configuration
-Auto-creates SQLite database. For MySQL:
+The application supports both SQLite (default for development) and MySQL (for production).
+
+#### Environment Files
+- `.env` - Development configuration (default: SQLite)
+- `.env.production` - Production configuration (MySQL)
+
+#### SQLite Configuration (Default)
 ```bash
-export DB_TYPE=mysql
-export DB_HOST=localhost DB_PORT=3306
-export DB_USER=root DB_PASSWORD=password
-export DB_NAME=task_dashboard
+DB_TYPE=sqlite
+DB_PATH=task_dashboard.db
 ```
+
+#### MySQL Configuration
+```bash
+DB_TYPE=mysql
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=your_password_here
+DB_NAME=task_dashboard
+```
+
+To use MySQL, either:
+1. Set `DB_TYPE=mysql` in your .env file
+2. Or use the `.env.production` file
 
 ### API Usage Examples
 ```bash

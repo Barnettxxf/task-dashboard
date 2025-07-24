@@ -9,3 +9,5 @@ uvicorn
 bcrypt
 bleach
 slowapi
+cryptography
+python-dotenv
