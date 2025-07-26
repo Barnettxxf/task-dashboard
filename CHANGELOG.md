@@ -2,6 +2,21 @@
 
 All notable changes to the Task Dashboard application will be documented in this file.
 
+## [1.3.0] - 2025-07-26
+
+### Added
+- **Docker Support**: Complete Docker containerization for easy deployment
+- **Docker Compose**: Simplified deployment with docker-compose.yml for both development and production
+- **Docker Documentation**: Comprehensive DOCKER.md with usage instructions for containerized deployment
+- **Startup Script**: Added startup.sh for easy application startup with configurable database
+- **Docker Ignore**: .dockerignore file to exclude unnecessary files from Docker builds
+
+### Technical Improvements
+- **Container Configuration**: Optimized Dockerfile with multi-stage build and proper environment handling
+- **Database Flexibility**: Docker containers support both SQLite (development) and MySQL (production) via environment variables
+- **Data Persistence**: Docker volume support for persistent SQLite database storage
+- **Port Configuration**: Exposes both 3000 (frontend) and 8000 (backend API) ports for containerized deployment
+
 ## [1.2.0] - 2025-07-23
 
 ### Added
