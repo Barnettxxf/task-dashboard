@@ -10,6 +10,7 @@ All notable changes to the Task Dashboard application will be documented in this
 - **Docker Documentation**: Comprehensive DOCKER.md with usage instructions for containerized deployment
 - **Startup Script**: Added startup.sh for easy application startup with configurable database
 - **Docker Ignore**: .dockerignore file to exclude unnecessary files from Docker builds
+- **Environment Example**: Added .env.example file with clear configuration examples for both SQLite and MySQL
 
 ### Technical Improvements
 - **Container Configuration**: Optimized Dockerfile with multi-stage build and proper environment handling

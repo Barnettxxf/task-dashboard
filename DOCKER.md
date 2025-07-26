@@ -33,6 +33,12 @@ DB_PASSWORD=your_mysql_password
 DB_NAME=your_database_name
 ```
 
+Alternatively, copy the provided `.env.example` file:
+```bash
+cp .env.example .env
+# Then edit .env with your specific database settings
+```
+
 Then run:
 ```bash
 # Build and start services with production configuration
