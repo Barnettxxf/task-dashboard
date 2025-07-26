@@ -6,9 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Framework**: Reflex (Python reactive web framework)
 - **Backend**: FastAPI with SQLAlchemy ORM
 - **Database**: SQLite (default) / MySQL (production)
-- **Authentication**: JWT-based user authentication with password hashing
+- **Authentication**: JWT-based user authentication with bcrypt password hashing
 - **Styling**: Tailwind CSS via Reflex components
 - **Testing**: pytest with FastAPI TestClient
+- **Security**: Rate limiting with slowapi, XSS protection with bleach, input validation
 
 ## Core Commands
 
@@ -31,6 +32,7 @@ reflex export                       # Static build for deployment
 python -m pytest tests/ -v          # Run all tests
 python tests/test_api.py -v         # Run API tests only
 python tests/test_api_auth.py -v    # Run auth tests only
+python tests/test_auth_security.py -v # Run security tests only
 ```
 
 ### Database Configuration
@@ -96,7 +98,8 @@ curl -X PATCH http://localhost:8000/tasks/1/status \
 - **Web UI**: Reflex frontend (port 3000) with reactive state management
 - **REST API**: FastAPI endpoints (port 8000) with Swagger documentation
 - **Database**: SQLAlchemy models auto-synced between interfaces
-- **Authentication**: User-specific task isolation with JWT tokens
+- **Authentication**: User-specific task isolation with Bearer tokens
+- **Rate Limiting**: API protection using slowapi to prevent abuse
 
 ### Modular Code Structure (Post-Refactor)
 ```
@@ -290,3 +293,48 @@ DB_NAME=task_dashboard
 2. Update password validation rules if needed
 3. Add new security tests in `tests/test_auth_security.py`
 4. Verify input validation in API endpoints
+
+### Running Tests
+The application includes comprehensive test suites:
+
+1. **API Tests**: `python -m pytest tests/test_api.py -v`
+2. **Authentication Tests**: `python -m pytest tests/test_api_auth.py -v`
+3. **Security Tests**: `python -m pytest tests/test_auth_security.py -v`
+4. **All Tests**: `python -m pytest tests/ -v`
+
+Tests use a separate test database (`test_tasks.db`) and automatically clean up after each test run.
+
+### Performance Testing
+For performance testing, you can use the included test_performance.db file and run tests with specific performance metrics.
+
+## Security Best Practices
+
+### Password Security
+- All passwords are hashed using bcrypt with automatic salting
+- Minimum password length of 6 characters enforced
+- Backward compatibility with legacy SHA-256 hashes
+
+### Input Validation
+- All API endpoints validate input using Pydantic models
+- XSS protection using bleach for HTML sanitization
+- SQL injection prevention through SQLAlchemy ORM
+
+### Rate Limiting
+- Registration: 5 requests/minute (100 in test mode)
+- Login: 10 requests/minute (100 in test mode)
+- API endpoints: 100 requests/minute (1000 in test mode)
+- Strict API operations: 10 requests/minute (100 in test mode)
+
+## Troubleshooting
+
+### Common Issues
+1. **Database Connection Errors**: Check `.env` configuration and ensure database service is running
+2. **Authentication Failures**: Verify username/password and check if user exists in database
+3. **API Rate Limiting**: Wait for rate limit window to reset or adjust limits in `rate_limit_config.py`
+4. **Deployment Issues**: Check file permissions and paths in service configuration files
+
+### Debugging Tips
+1. Enable verbose logging by setting environment variables
+2. Use the API documentation at http://localhost:8000/docs for testing endpoints
+3. Check browser console for frontend errors
+4. Review application logs in `/var/log/nginx/` for production deployments
